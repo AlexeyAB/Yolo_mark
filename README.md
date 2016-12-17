@@ -4,8 +4,8 @@ Windows GUI for marking bounded boxes of objects in images for training Yolo v2
 Here are:
 
 * /x64/Release/
-  * `yolo_mark.cmd` - example hot to use yolo mark: 
-  * `train_obj.cmd` - example how to train yolo for your custom objects (put this file near with `darknet.exe`)
+  * `yolo_mark.cmd` - example hot to use yolo mark: `yolo_mark.exe data/img data/train.txt data/obj.names`
+  * `train_obj.cmd` - example how to train yolo for your custom objects (put this file near with darknet.exe): `darknet.exe detector train data/obj.data yolo-obj.cfg darknet19_448.conv.23`
   * `yolo-obj.cfg` - example of yoloV2-neural-network for 2 object
 * /x64/Release/data/
   * `obj.names` - example of list with object names

@@ -1,7 +1,7 @@
 # Yolo_mark
 Windows GUI for marking bounded boxes of objects in images for training Yolo v2
 
-1. To test, simply run the file: `x64/Release/yolo_mark.cmd`
+1. To test, simply open in MSVS2013/2015 `yolo_mark.sln`, compile it and run the file: `x64/Release/yolo_mark.cmd`
 2. To use for labeling your custom images:
 
  * delete all files from directory `x64/Release/data/img`

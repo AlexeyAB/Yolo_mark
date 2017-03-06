@@ -84,7 +84,7 @@ int main(int argc, char *argv[])
 
 	try
 	{
-		std::string images_path = "/";
+		std::string images_path = "./";
 
 		if (argc >= 2) {
 			images_path = std::string(argv[1]);         // path to images, train and synset
@@ -94,8 +94,8 @@ int main(int argc, char *argv[])
 			return 0;
 		}
 
-		std::string train_filename = images_path + "/train.txt";
-		std::string synset_filename = images_path + "/obj.names";
+		std::string train_filename = images_path + "train.txt";
+		std::string synset_filename = images_path + "obj.names";
 
 		if (argc >= 3) {
 			train_filename = std::string(argv[2]);		// file containing: list of images

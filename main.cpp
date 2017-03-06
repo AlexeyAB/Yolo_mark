@@ -154,12 +154,12 @@ int main(int argc, char *argv[])
 			txt_filenames.begin(), txt_filenames.end(),
 			difference_filenames.begin());
 		difference_filenames.resize(dif_it_end - difference_filenames.begin());
-
+				
 		auto inter_it_end = std::set_intersection(jpg_filenames_without_ext.begin(), jpg_filenames_without_ext.end(),
 			txt_filenames.begin(), txt_filenames.end(),
 			intersect_filenames.begin());
 		intersect_filenames.resize(inter_it_end - intersect_filenames.begin());
-
+		
 		txt_filenames.clear();
 		for (auto &i : intersect_filenames) {
 			txt_filenames.push_back(i + ".txt");
@@ -239,7 +239,7 @@ int main(int argc, char *argv[])
 				frame(Rect(0, 0, frame.cols, preview.rows)) = Scalar::all(0);
 
 				// save current coords
-				if (old_trackbar_value >= 0 && current_coord_vec.size() > 0)
+				if (old_trackbar_value >= 0) // && current_coord_vec.size() > 0) // Yolo v2 can processes background-image without objects
 				{
 					try
 					{
@@ -252,6 +252,7 @@ int main(int argc, char *argv[])
 
 						std::ofstream ofs(txt_filename_path, std::ios::out | std::ios::trunc);
 
+						// store coords to [image name].txt
 						for (auto &i : current_coord_vec)
 						{
 							float const relative_center_x = (float)(i.abs_rect.x + i.abs_rect.width / 2) / full_image_roi.cols;
@@ -262,18 +263,18 @@ int main(int argc, char *argv[])
 							ofs << std::to_string(i.id) << " " <<
 								std::to_string(relative_center_x) << " " << std::to_string(relative_center_y) << " " <<
 								std::to_string(relative_width) << " " << std::to_string(relative_height) << std::endl;
+						}
+						
+						// store [path/image name.jpg] to train.txt
+						auto it = std::find(difference_filenames.begin(), difference_filenames.end(), filename_without_ext);
+						if (it != difference_filenames.end())
+						{
+							ofs_train << images_path << "/" << jpg_filename << std::endl;
+							ofs_train.flush();
 
-							auto it = std::find(difference_filenames.begin(), difference_filenames.end(), filename_without_ext);
-
-							if (it != difference_filenames.end())
-							{
-								ofs_train << images_path << "/" << jpg_filename << std::endl;
-								ofs_train.flush();
-
-								size_t new_size = std::remove(difference_filenames.begin(), difference_filenames.end(), filename_without_ext) -
-									difference_filenames.begin();
-								difference_filenames.resize(new_size);
-							}
+							size_t new_size = std::remove(difference_filenames.begin(), difference_filenames.end(), filename_without_ext) -
+								difference_filenames.begin();
+							difference_filenames.resize(new_size);
 						}
 					}
 					catch (...) { std::cout << " Exception when try to write txt-file \n"; }

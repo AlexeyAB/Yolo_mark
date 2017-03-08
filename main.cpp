@@ -9,6 +9,7 @@
 #include <numeric>
 #include <chrono>
 #include <atomic>
+#include <locale>
 #include <future>	// C++11: async(); feature<>;
 #include <iostream>
 #include <fstream>  // std::ofstream
@@ -78,12 +79,22 @@ void callback_mouse_click(int event, int x, int y, int flags, void* user_data)
     }
 }
 
+class comma : public std::numpunct<char> {
+public:
+	comma() : std::numpunct<char>() {}
+protected:
+	char do_decimal_point() const { return '.';	}
+};
+
 
 int main(int argc, char *argv[])
 {
 
 	try
 	{
+		std::locale loccomma(std::locale::classic(), new comma);
+		std::locale::global(loccomma);
+
 		std::string images_path = "./";
 
 		if (argc >= 2) {
@@ -251,6 +262,7 @@ int main(int argc, char *argv[])
 						std::cout << "txt_filename_path = " << txt_filename_path << std::endl;
 
 						std::ofstream ofs(txt_filename_path, std::ios::out | std::ios::trunc);
+						ofs << std::fixed;
 
 						// store coords to [image name].txt
 						for (auto &i : current_coord_vec)
@@ -260,9 +272,9 @@ int main(int argc, char *argv[])
 							float const relative_width = (float)i.abs_rect.width / full_image_roi.cols;
 							float const relative_height = (float)i.abs_rect.height / full_image_roi.rows;
 
-							ofs << std::to_string(i.id) << " " <<
-								std::to_string(relative_center_x) << " " << std::to_string(relative_center_y) << " " <<
-								std::to_string(relative_width) << " " << std::to_string(relative_height) << std::endl;
+							ofs << i.id << " " <<
+								relative_center_x << " " << relative_center_y << " " <<
+								relative_width << " " << relative_height << std::endl;
 						}
 						
 						// store [path/image name.jpg] to train.txt

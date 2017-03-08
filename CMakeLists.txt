@@ -1,13 +1,11 @@
 cmake_minimum_required(VERSION 2.8)
-project( yolo_mark )
+project( yolo_mark CXX )
 find_package( OpenCV REQUIRED )
 
+set( sources main.cpp )
 
-add_custom_command( OUTPUT main.o
-				COMMAND g++ -m64 -O3 -fpermissive -w -Wall -std=c++11 -c main.cpp 
-				DEPENDS main.cpp )
+add_executable( yolo_mark ${sources} )
 
+target_compile_options( yolo_mark PUBLIC -std=c++11 -fpermissive -w -Wall )
 
-add_executable( yolo_mark main.o )
-
-target_link_libraries( yolo_mark ${OpenCV_LIBS} -L/usr/lib64 -ldl)
+target_link_libraries( yolo_mark ${OpenCV_LIBS} -L/usr/lib64 -ldl )

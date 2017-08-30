@@ -301,6 +301,11 @@ int main(int argc, char *argv[])
 				for (size_t i = 0; i < preview_number && (i + trackbar_value) < jpg_filenames_path.size(); ++i)
 				{
 					Mat img = imread(jpg_filenames_path[trackbar_value + i]);
+					// check if the image has been loaded successful to prevent crash 
+					if (img.cols == 0)
+					{
+						continue;
+					}
 					current_img_size = img.size();
 					resize(img, preview, preview.size());
 					int const x_shift = i*preview.cols + prev_img_rect.width;

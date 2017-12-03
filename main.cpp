@@ -1,8 +1,3 @@
-#pragma comment(lib, "opencv_core249.lib")  
-#pragma comment(lib, "opencv_imgproc249.lib")  
-#pragma comment(lib, "opencv_highgui249.lib")  
-
-
 #include <cstdio>
 #include <iostream>
 #include <vector>
@@ -15,9 +10,18 @@
 #include <fstream>  // std::ofstream
 
 
-#include <opencv2/core/core.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
-#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/opencv.hpp>			// C++
+#include "opencv2/core/version.hpp"
+#ifndef CV_VERSION_EPOCH
+#include "opencv2/videoio/videoio.hpp"
+#define OPENCV_VERSION CVAUX_STR(CV_VERSION_MAJOR)""CVAUX_STR(CV_VERSION_MINOR)""CVAUX_STR(CV_VERSION_REVISION)
+#pragma comment(lib, "opencv_world" OPENCV_VERSION ".lib")
+#else
+#define OPENCV_VERSION CVAUX_STR(CV_VERSION_EPOCH)""CVAUX_STR(CV_VERSION_MAJOR)""CVAUX_STR(CV_VERSION_MINOR)
+#pragma comment(lib, "opencv_core" OPENCV_VERSION ".lib")
+#pragma comment(lib, "opencv_imgproc" OPENCV_VERSION ".lib")
+#pragma comment(lib, "opencv_highgui" OPENCV_VERSION ".lib")
+#endif
 
 
 using namespace cv;
@@ -114,6 +118,32 @@ int main(int argc, char *argv[])
 
 		if (argc >= 4) {
 			synset_filename = std::string(argv[3]);		// file containing: object names
+		}
+
+		// capture frames from video file - 1 frame per 3 seconds of video
+		if (argc >= 4 && train_filename == "cap_video") {
+			const std::string videofile = synset_filename;
+			cv::VideoCapture cap(videofile);
+			const int fps = cap.get(CV_CAP_PROP_FPS);
+			int frame_counter = 0, image_counter = 0;
+
+			int pos_filename = 0;
+			if ((1 + videofile.find_last_of("\\")) < videofile.length()) pos_filename = 1 + videofile.find_last_of("\\");
+			if ((1 + videofile.find_last_of("/")) < videofile.length()) pos_filename = std::max(pos_filename, 1 + (int)videofile.find_last_of("/"));
+			std::string const filename = videofile.substr(pos_filename);
+			std::string const filename_without_ext = filename.substr(0, filename.find_last_of("."));
+
+			for (cv::Mat frame; cap >> frame, cap.isOpened();) {
+				cv::imshow("video cap to frames", frame);
+				if(cv::waitKeyEx(3) == 27) break;  // ESC - exit
+				if (frame_counter++ >= fps*3) {		// save frame for each 3 second
+					frame_counter = 0;
+					std::string img_name = images_path + "/" + filename_without_ext + "_" + std::to_string(image_counter++) + ".jpg";
+					std::cout << "saved " << img_name << std::endl;
+					cv::imwrite(img_name, frame);
+				}
+			}
+			exit(0);
 		}
 
 		std::vector<std::string> filenames_in_folder;
@@ -494,7 +524,7 @@ int main(int argc, char *argv[])
 			}
 
 			putText(full_image_roi,
-				"<- prev_img     -> next_img     space - next_img     c - clear_marks      n - one_object_per_img     0-9 - obj_id     ESC - exit",
+				"<- prev_img     -> next_img     space - next_img     c - clear_marks     n - one_object_per_img    0-9 - obj_id    ESC - exit",
 				Point2i(0, 45), FONT_HERSHEY_SIMPLEX, 0.6, Scalar(50, 10, 10), 2);
 
 
@@ -523,7 +553,8 @@ int main(int argc, char *argv[])
 
 			imshow(window_name, frame);
 
-			int pressed_key = cv::waitKey(20);
+			//int pressed_key = cv::waitKey(20);
+			int pressed_key = cv::waitKeyEx(20);
 
 			if (pressed_key >= 0)
 				for (int i = 0; i < 5; ++i) cv::waitKey(1);
@@ -540,7 +571,13 @@ int main(int argc, char *argv[])
 			case 2424832:   // <-
 				--trackbar_value;
 				break;
+			case 91:		// <- [
+				--trackbar_value;
+				break;
 			case 2555904:   // ->
+				++trackbar_value;
+				break;
+			case 93:		// -> ]
 				++trackbar_value;
 				break;
 			case 'c':       // c

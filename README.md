@@ -1,7 +1,11 @@
 # Yolo_mark
 **Windows** & **Linux** GUI for marking bounded boxes of objects in images for training Yolo v2
 
-* To compile on **Windows** open in MSVS2013/2015 `yolo_mark.sln`, compile it and run the file: `x64/Release/yolo_mark.cmd` (if your  version other than OpenCV 2.4.9 - change version number in 3 lines by [this link] (https://github.com/AlexeyAB/Yolo_mark/blob/746e590b106080dbb3d205dd453b2fcea5e880a3/main.cpp#L1) )
+* To compile on **Windows** open `yolo_mark.sln` in MSVS2013/2015, compile it **x64 & Release** and run the file: `x64/Release/yolo_mark.cmd`. Change paths in `yolo_mark.sln` to the OpenCV 2.x/3.x installed on your computer:
+
+    * (right click on project) -> properties -> C/C++ -> General -> Additional Include Directories: `C:\opencv_3.0\opencv\build\include;`
+        
+    * (right click on project) -> properties -> Linker -> General -> Additional Library Directories: `C:\opencv_3.0\opencv\build\x64\vc14\lib;`
 
 * To compile on **Linux** type in console 3 commands:
     ```
@@ -9,6 +13,8 @@
     make
     ./linux_mark.sh
     ```
+
+Supported both: OpenCV 2.x and OpenCV 3.x
 
 --------
 

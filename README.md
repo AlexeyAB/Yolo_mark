@@ -13,8 +13,8 @@
 --------
 
 1. To test, simply run 
-  * on Windows: `x64/Release/yolo_mark.cmd`
-  * on Linux `./linux_mark.sh`
+  * **on Windows:** `x64/Release/yolo_mark.cmd`
+  * **on Linux:** `./linux_mark.sh`
 
 2. To use for labeling your custom images:
 
@@ -36,7 +36,21 @@
 
 For a detailed description, see: https://github.com/AlexeyAB/darknet#how-to-train-to-detect-your-custom-objects
 
-####Here are:
+----
+
+#### How to get frames from videofile:
+
+To get frames from videofile (frame for each 3 seconds of video), you can use this command:
+* on Windows: `yolo_mark.exe data/img cap_video test.mp4`
+* on Linux: `./yolo_mark x64/Release/data/img cap_video test.mp4`
+
+As a result, many frames will be collected in the directory `data/img`. Then you can label them manually using such command: 
+* on Windows: `yolo_mark.exe data/img data/train.txt data/obj.names`
+* on Linux: `./yolo_mark x64/Release/data/img x64/Release/data/train.txt x64/Release/data/obj.names`
+
+----
+
+#### Here are:
 
 * /x64/Release/
   * `yolo_mark.cmd` - example hot to use yolo mark: `yolo_mark.exe data/img data/train.txt data/obj.names`

@@ -12,6 +12,7 @@
 
 #include <opencv2/opencv.hpp>			// C++
 #include "opencv2/core/version.hpp"
+#include <opencv2/imgproc/imgproc.hpp>
 #ifndef CV_VERSION_EPOCH
 #include "opencv2/videoio/videoio.hpp"
 #define OPENCV_VERSION CVAUX_STR(CV_VERSION_MAJOR)""CVAUX_STR(CV_VERSION_MINOR)""CVAUX_STR(CV_VERSION_REVISION)
@@ -135,7 +136,7 @@ int main(int argc, char *argv[])
 
 			for (cv::Mat frame; cap >> frame, cap.isOpened();) {
 				cv::imshow("video cap to frames", frame);
-				if(cv::waitKeyEx(3) == 27) break;  // ESC - exit
+				if (cv::waitKey(3) == 27) break;  // ESC - exit (OpenCV 2.x / 3.x)
 				if (frame_counter++ >= fps*3) {		// save frame for each 3 second
 					frame_counter = 0;
 					std::string img_name = images_path + "/" + filename_without_ext + "_" + std::to_string(image_counter++) + ".jpg";
@@ -553,8 +554,11 @@ int main(int argc, char *argv[])
 
 			imshow(window_name, frame);
 
-			//int pressed_key = cv::waitKey(20);
-			int pressed_key = cv::waitKeyEx(20);
+#ifndef CV_VERSION_EPOCH
+			int pressed_key = cv::waitKeyEx(20);	// OpenCV 3.x
+#else
+			int pressed_key = cv::waitKey(20);		// OpenCV 2.x
+#endif
 
 			if (pressed_key >= 0)
 				for (int i = 0; i < 5; ++i) cv::waitKey(1);
@@ -568,13 +572,20 @@ int main(int argc, char *argv[])
 			case 32:        // SPACE
 				++trackbar_value;
 				break;
+
 			case 2424832:   // <-
+				--trackbar_value;
+				break;
+			case 65361:     // <-
 				--trackbar_value;
 				break;
 			case 91:		// <- [
 				--trackbar_value;
 				break;
 			case 2555904:   // ->
+				++trackbar_value;
+				break;
+			case 65363:     // ->
 				++trackbar_value;
 				break;
 			case 93:		// -> ]

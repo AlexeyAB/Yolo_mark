@@ -136,7 +136,12 @@ int main(int argc, char *argv[])
 
 			for (cv::Mat frame; cap >> frame, cap.isOpened();) {
 				cv::imshow("video cap to frames", frame);
-				if (cv::waitKey(3) == 27) break;  // ESC - exit (OpenCV 2.x / 3.x)
+#ifndef CV_VERSION_EPOCH
+				int pressed_key = cv::waitKeyEx(20);	// OpenCV 3.x
+#else
+				int pressed_key = cv::waitKey(20);		// OpenCV 2.x
+#endif
+				if (pressed_key == 27 || pressed_key == 1048603) break;  // ESC - exit (OpenCV 2.x / 3.x)
 				if (frame_counter++ >= fps*3) {		// save frame for each 3 second
 					frame_counter = 0;
 					std::string img_name = images_path + "/" + filename_without_ext + "_" + std::to_string(image_counter++) + ".jpg";
@@ -563,38 +568,34 @@ int main(int argc, char *argv[])
 			if (pressed_key >= 0)
 				for (int i = 0; i < 5; ++i) cv::waitKey(1);
 
-			if (pressed_key == 27)  break;  // ESC - exit
+			if (pressed_key == 27 || pressed_key == 1048603)  break;  // ESC - exit
 
 			if (pressed_key >= '0' && pressed_key <= '9') current_obj_id = pressed_key - '0';   // 0 - 9
+			if (pressed_key >= 1048624 && pressed_key <= 1048633) current_obj_id = pressed_key - 1048624;   // 0 - 9
 
 			switch (pressed_key)
 			{
 			case 32:        // SPACE
+			case 1048608:	// SPACE
 				++trackbar_value;
 				break;
 
 			case 2424832:   // <-
-				--trackbar_value;
-				break;
 			case 65361:     // <-
-				--trackbar_value;
-				break;
-			case 91:		// <- [
+			case 91:		// [
 				--trackbar_value;
 				break;
 			case 2555904:   // ->
-				++trackbar_value;
-				break;
 			case 65363:     // ->
-				++trackbar_value;
-				break;
-			case 93:		// -> ]
+			case 93:		// ]
 				++trackbar_value;
 				break;
 			case 'c':       // c
+			case 1048675:	// c
 				clear_marks = true;
 				break;
 			case 'n':       // n
+			case 1048686:   // n
 				next_by_click = !next_by_click;
 				full_image.copyTo(full_image_roi);
 				break;
@@ -602,7 +603,7 @@ int main(int argc, char *argv[])
 				;
 			}
 
-			//std::cout << "pressed_key = " << (int)pressed_key << std::endl;
+			//if (pressed_key >= 0) std::cout << "pressed_key = " << (int)pressed_key << std::endl;
 
 		} while (true);
 

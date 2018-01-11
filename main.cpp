@@ -263,7 +263,8 @@ int main(int argc, char *argv[])
 
 
 		std::string const window_name = "Marking images";
-		namedWindow(window_name, WINDOW_AUTOSIZE);
+		namedWindow(window_name, WINDOW_NORMAL);
+		resizeWindow(window_name, 1280, 720);
 		imshow(window_name, frame);
 		moveWindow(window_name, 0, 0);
 		setMouseCallback(window_name, callback_mouse_click);

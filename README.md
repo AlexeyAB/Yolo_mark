@@ -46,9 +46,11 @@ For a detailed description, see: https://github.com/AlexeyAB/darknet#how-to-trai
 
 #### How to get frames from videofile:
 
-To get frames from videofile (frame for each 3 seconds of video), you can use this command:
-* on Windows: `yolo_mark.exe data/img cap_video test.mp4`
-* on Linux: `./yolo_mark x64/Release/data/img cap_video test.mp4`
+To get frames from videofile (save each N frame, in example N=10), you can use this command:
+* on Windows: `yolo_mark.exe data/img cap_video test.mp4 10`
+* on Linux: `./yolo_mark x64/Release/data/img cap_video test.mp4 10`
+
+Directory `data/img` should be created before this. Also on Windows, the file `opencv_ffmpeg340_64.dll` from `opencv\build\bin` should be placed near with `yolo_mark.exe`.
 
 As a result, many frames will be collected in the directory `data/img`. Then you can label them manually using such command: 
 * on Windows: `yolo_mark.exe data/img data/train.txt data/obj.names`

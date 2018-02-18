@@ -127,6 +127,8 @@ int main(int argc, char *argv[])
 			cv::VideoCapture cap(videofile);
 			const int fps = cap.get(CV_CAP_PROP_FPS);
 			int frame_counter = 0, image_counter = 0;
+			float save_each_frames = 50;
+			if (argc >= 5) save_each_frames = std::stoul(std::string(argv[4]));
 
 			int pos_filename = 0;
 			if ((1 + videofile.find_last_of("\\")) < videofile.length()) pos_filename = 1 + videofile.find_last_of("\\");
@@ -134,7 +136,7 @@ int main(int argc, char *argv[])
 			std::string const filename = videofile.substr(pos_filename);
 			std::string const filename_without_ext = filename.substr(0, filename.find_last_of("."));
 
-			for (cv::Mat frame; cap >> frame, cap.isOpened();) {
+			for (cv::Mat frame; cap >> frame, cap.isOpened() && !frame.empty();) {
 				cv::imshow("video cap to frames", frame);
 #ifndef CV_VERSION_EPOCH
 				int pressed_key = cv::waitKeyEx(20);	// OpenCV 3.x
@@ -142,7 +144,7 @@ int main(int argc, char *argv[])
 				int pressed_key = cv::waitKey(20);		// OpenCV 2.x
 #endif
 				if (pressed_key == 27 || pressed_key == 1048603) break;  // ESC - exit (OpenCV 2.x / 3.x)
-				if (frame_counter++ >= fps*3) {		// save frame for each 3 second
+				if (frame_counter++ >= save_each_frames) {		// save frame for each 3 second
 					frame_counter = 0;
 					std::string img_name = images_path + "/" + filename_without_ext + "_" + std::to_string(image_counter++) + ".jpg";
 					std::cout << "saved " << img_name << std::endl;

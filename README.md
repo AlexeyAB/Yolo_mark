@@ -1,5 +1,5 @@
 # Yolo_mark
-**Windows** & **Linux** GUI for marking bounded boxes of objects in images for training Yolo v2
+**Windows** & **Linux** GUI for marking bounded boxes of objects in images for training Yolo v3 and v2
 
 * To compile on **Windows** open `yolo_mark.sln` in MSVS2013/2015, compile it **x64 & Release** and run the file: `x64/Release/yolo_mark.cmd`. Change paths in `yolo_mark.sln` to the OpenCV 2.x/3.x installed on your computer:
 
@@ -63,11 +63,11 @@ As a result, many frames will be collected in the directory `data/img`. Then you
 * /x64/Release/
   * `yolo_mark.cmd` - example hot to use yolo mark: `yolo_mark.exe data/img data/train.txt data/obj.names`
   * `train_obj.cmd` - example how to train yolo for your custom objects (put this file near with darknet.exe): `darknet.exe detector train data/obj.data yolo-obj.cfg darknet19_448.conv.23`
-  * `yolo-obj.cfg` - example of yoloV2-neural-network for 2 object
+  * `yolo-obj.cfg` - example of yoloV3-neural-network for 2 object
 * /x64/Release/data/
   * `obj.names` - example of list with object names
-  * `obj.data` - example with configuration for training Yolo v2
-  * `train.txt` - example with list of image filenames for training Yolo v2
+  * `obj.data` - example with configuration for training Yolo v3
+  * `train.txt` - example with list of image filenames for training Yolo v3
   
 * /x64/Release/data/img/`air4.txt` - example with coordinates of objects on image `air4.jpg` with aircrafts (class=0)
 

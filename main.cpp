@@ -11,8 +11,9 @@
 
 
 #include <opencv2/opencv.hpp>			// C++
-#include "opencv2/core/version.hpp"
+#include <opencv2/core/version.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/highgui.hpp>
 #ifndef CV_VERSION_EPOCH
 #include "opencv2/videoio/videoio.hpp"
 #define OPENCV_VERSION CVAUX_STR(CV_VERSION_MAJOR)""CVAUX_STR(CV_VERSION_MINOR)""CVAUX_STR(CV_VERSION_REVISION)
@@ -280,7 +281,7 @@ int main(int argc, char *argv[])
 
 		int old_current_obj_id = -1, current_obj_id = 0;
 		std::string const trackbar_name_2 = "object id";
-		int const max_object_id = 20;
+		int const max_object_id = (synset_txt.size() > 0) ? synset_txt.size() : 20;
 		int tb_res_2 = createTrackbar(trackbar_name_2, window_name, &current_obj_id, max_object_id);
 
 
@@ -315,6 +316,11 @@ int main(int argc, char *argv[])
 							float const relative_center_y = (float)(i.abs_rect.y + i.abs_rect.height / 2) / full_image_roi.rows;
 							float const relative_width = (float)i.abs_rect.width / full_image_roi.cols;
 							float const relative_height = (float)i.abs_rect.height / full_image_roi.rows;
+
+							if (relative_width <= 0) continue;
+							if (relative_height <= 0) continue;
+							if (relative_center_x <= 0) continue;
+							if (relative_center_y <= 0) continue;
 
 							ofs << i.id << " " <<
 								relative_center_x << " " << relative_center_y << " " <<
@@ -369,9 +375,12 @@ int main(int argc, char *argv[])
 							{
 								std::stringstream ss(line);
 								coord_t coord;
+								coord.id = -1;
 								ss >> coord.id;
-								float relative_coord[4];  // rel_center_x, rel_center_y, rel_width, rel_height                          
-								for (size_t i = 0; i < 4; i++) ss >> relative_coord[i];
+								if (coord.id < 0) continue;
+								float relative_coord[4] = { -1, -1, -1, -1 };  // rel_center_x, rel_center_y, rel_width, rel_height                          
+								for (size_t i = 0; i < 4; i++) if(!(ss >> relative_coord[i])) continue;
+								for (size_t i = 0; i < 4; i++) if (relative_coord[i] < 0) continue;
 								coord.abs_rect.x = (relative_coord[0] - relative_coord[2] / 2) * (float)full_image_roi.cols;
 								coord.abs_rect.y = (relative_coord[1] - relative_coord[3] / 2) * (float)full_image_roi.rows;
 								coord.abs_rect.width = relative_coord[2] * (float)full_image_roi.cols;

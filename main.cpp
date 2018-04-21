@@ -155,6 +155,7 @@ int main(int argc, char *argv[])
 			exit(0);
 		}
 
+		bool show_mouse_coords = false;
 		std::vector<std::string> filenames_in_folder;
 		//glob(images_path, filenames_in_folder); // void glob(String pattern, std::vector<String>& result, bool recursive = false);
 		cv::String images_path_cv = images_path;
@@ -351,7 +352,6 @@ int main(int argc, char *argv[])
 					{
 						continue;
 					}
-					current_img_size = img.size();
 					resize(img, preview, preview.size());
 					int const x_shift = i*preview.cols + prev_img_rect.width;
 					Rect rect_dst(Point2i(x_shift, 0), preview.size());
@@ -364,6 +364,7 @@ int main(int argc, char *argv[])
 					{
 						resize(img, full_image, full_rect_dst.size());
 						full_image.copyTo(full_image_roi);
+						current_img_size = img.size();
 
 						try {
 							std::string const jpg_filename = jpg_filenames[trackbar_value];
@@ -464,13 +465,36 @@ int main(int argc, char *argv[])
 			std::string current_synset_name;
 			if (current_obj_id < synset_txt.size()) current_synset_name = "   - " + synset_txt[current_obj_id];
 
+			if (show_mouse_coords) {
+				full_image.copyTo(full_image_roi);
+				int const x_inside = std::min((int)x_end, full_image_roi.cols);
+				int const y_inside = std::min(std::max(0, y_end - (int)prev_img_rect.height), full_image_roi.rows);
+				float const relative_center_x = (float)(x_inside) / full_image_roi.cols;
+				float const relative_center_y = (float)(y_inside) / full_image_roi.rows;
+				int const abs_x = relative_center_x*current_img_size.width;
+				int const abs_y = relative_center_y*current_img_size.height;
+				char buff[100];
+				snprintf(buff, 100, "Abs: %d x %d    Rel: %.3f x %.3f", abs_x, abs_y, relative_center_x, relative_center_y);
+				//putText(full_image_roi, buff, Point2i(800, 20), FONT_HERSHEY_SIMPLEX, 0.7, Scalar(50, 10, 10), 3);
+				putText(full_image_roi, buff, Point2i(800, 20), FONT_HERSHEY_SIMPLEX, 0.7, Scalar(100, 50, 50), 2);
+				putText(full_image_roi, buff, Point2i(800, 20), FONT_HERSHEY_SIMPLEX, 0.7, Scalar(220, 120, 120), 1);
+			}
+			else
+			{
+				full_image.copyTo(full_image_roi);
+				std::string text = "Show mouse coordinates - press M";
+				putText(full_image_roi, text, Point2i(800, 20), FONT_HERSHEY_SIMPLEX, 0.7, Scalar(100, 50, 50), 2);
+				//putText(full_image_roi, text, Point2i(800, 20), FONT_HERSHEY_SIMPLEX, 0.7, Scalar(220, 120, 120), 1);
+			}
+
+
 			if (draw_select)
 			{
 				if (add_id_img != 0) trackbar_value += add_id_img;
 
 				if (y_start >= preview.rows)
 				{
-					full_image.copyTo(full_image_roi);
+					//full_image.copyTo(full_image_roi);
 					Rect selected_rect(
 						Point2i(max(0, (int)min(x_start, x_end)), max(preview.rows, (int)min(y_start, y_end))),
 						Point2i(max(x_start, x_end), max(y_start, y_end)));
@@ -605,6 +629,11 @@ int main(int argc, char *argv[])
 			case 'c':       // c
 			case 1048675:	// c
 				clear_marks = true;
+				break;
+			case 'm':		// m
+			case 1048685:   // m
+				show_mouse_coords = !show_mouse_coords;
+				full_image.copyTo(full_image_roi);
 				break;
 			case 'n':       // n
 			case 1048686:   // n

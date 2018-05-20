@@ -8,7 +8,7 @@
 #include <future>	// C++11: async(); feature<>;
 #include <iostream>
 #include <fstream>  // std::ofstream
-
+#include <algorithm> // std::unique
 
 #include <opencv2/opencv.hpp>			// C++
 #include <opencv2/core/version.hpp>
@@ -167,6 +167,7 @@ int main(int argc, char *argv[])
 		std::vector<std::string> jpg_filenames_path;
 		std::vector<std::string> jpg_filenames;
 		std::vector<std::string> jpg_filenames_without_ext;
+		std::vector<std::string> image_ext;
 		std::vector<std::string> txt_filenames;
 		std::vector<std::string> jpg_in_train;
 		std::vector<std::string> synset_txt;
@@ -182,9 +183,14 @@ int main(int argc, char *argv[])
 			std::string const ext = i.substr(i.find_last_of(".") + 1);
 			std::string const filename_without_ext = filename.substr(0, filename.find_last_of("."));
 
-			if (ext == "jpg")
+			if (ext == "jpg" || ext == "JPG" || 
+				ext == "jpeg" || ext == "JPEG" ||
+				ext == "bmp" || ext == "BMP" ||
+				ext == "png" || ext == "PNG" || 
+				ext == "ppm" || ext == "PPM")
 			{
 				jpg_filenames_without_ext.push_back(filename_without_ext);
+				image_ext.push_back(ext);
 				jpg_filenames.push_back(filename);
 				jpg_filenames_path.push_back(i);
 			}
@@ -201,10 +207,31 @@ int main(int argc, char *argv[])
 			return 0;
 		}
 
+		// check whether there is a files with the same name (but different extensions)
+		{
+			auto sorted_names_without_ext = jpg_filenames_without_ext;
+			std::sort(sorted_names_without_ext.begin(), sorted_names_without_ext.end());
+			for (size_t i = 1; i < sorted_names_without_ext.size(); ++i) {
+				if (sorted_names_without_ext[i - 1] == sorted_names_without_ext[i]) {
+					std::cout << "Error: Can't create " << sorted_names_without_ext[i] << 
+						".txt file for several images with different extensions but with the same filename: "
+						<< sorted_names_without_ext[i] << std::endl;
+					// print duplicate images
+					for (size_t k = 0; k < jpg_filenames_without_ext.size(); ++k) {
+						if (jpg_filenames_without_ext[k] == sorted_names_without_ext[i]) {
+							std::cout << jpg_filenames_without_ext[k] << "." << image_ext[k] << std::endl;
+						}
+					}
+					return 0;
+				}
+			}
+		}
 
 		// intersect jpg & txt
 		std::vector<std::string> intersect_filenames(jpg_filenames.size());
 		std::vector<std::string> difference_filenames(jpg_filenames.size());
+		std::vector<std::string> intersect_ext;
+		std::vector<std::string> difference_ext;
 
 		auto dif_it_end = std::set_difference(jpg_filenames_without_ext.begin(), jpg_filenames_without_ext.end(),
 			txt_filenames.begin(), txt_filenames.end(),
@@ -215,12 +242,23 @@ int main(int argc, char *argv[])
 			txt_filenames.begin(), txt_filenames.end(),
 			intersect_filenames.begin());
 		intersect_filenames.resize(inter_it_end - intersect_filenames.begin());
-		
+
+		// get intersect extensions for intersect_filenames
+		for (auto &i : intersect_filenames) {
+			size_t ext_index = find(jpg_filenames_without_ext.begin(), jpg_filenames_without_ext.end(), i) - jpg_filenames_without_ext.begin();
+			intersect_ext.push_back(image_ext[ext_index]);
+		}
+
+		// get difference extensions for intersect_filenames
+		for (auto &i : difference_filenames) {
+			size_t ext_index = find(jpg_filenames_without_ext.begin(), jpg_filenames_without_ext.end(), i) - jpg_filenames_without_ext.begin();
+			difference_ext.push_back(image_ext[ext_index]);
+		}
+
 		txt_filenames.clear();
 		for (auto &i : intersect_filenames) {
 			txt_filenames.push_back(i + ".txt");
 		}
-
 
 		int image_list_count = max(1, (int)jpg_filenames_path.size() - 1);
 
@@ -230,8 +268,8 @@ int main(int argc, char *argv[])
 			throw(std::runtime_error("Can't open file: " + train_filename));
 		}
 
-		for (auto &i : intersect_filenames) {
-			ofs_train << images_path << "/" << i << ".jpg" << std::endl;
+		for (size_t i = 0; i < intersect_filenames.size(); ++i) {
+			ofs_train << images_path << "/" << intersect_filenames[i] << "." << intersect_ext[i] << std::endl;
 		}
 		ofs_train.flush();
 		std::cout << "File opened for output: " << train_filename << std::endl;

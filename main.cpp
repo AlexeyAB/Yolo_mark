@@ -14,15 +14,22 @@
 #include <opencv2/core/version.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui.hpp>
+
+#ifdef _DEBUG
+#define LIB_SUFFIX "d.lib"
+#else
+#define LIB_SUFFIX ".lib"
+#endif // DEBUG
+
 #ifndef CV_VERSION_EPOCH
 #include "opencv2/videoio/videoio.hpp"
-#define OPENCV_VERSION CVAUX_STR(CV_VERSION_MAJOR)""CVAUX_STR(CV_VERSION_MINOR)""CVAUX_STR(CV_VERSION_REVISION)
-#pragma comment(lib, "opencv_world" OPENCV_VERSION ".lib")
+#define OPENCV_VERSION CVAUX_STR(CV_VERSION_MAJOR)"" CVAUX_STR(CV_VERSION_MINOR)"" CVAUX_STR(CV_VERSION_REVISION)
+#pragma comment(lib, "opencv_world" OPENCV_VERSION LIB_SUFFIX)
 #else
-#define OPENCV_VERSION CVAUX_STR(CV_VERSION_EPOCH)""CVAUX_STR(CV_VERSION_MAJOR)""CVAUX_STR(CV_VERSION_MINOR)
-#pragma comment(lib, "opencv_core" OPENCV_VERSION ".lib")
-#pragma comment(lib, "opencv_imgproc" OPENCV_VERSION ".lib")
-#pragma comment(lib, "opencv_highgui" OPENCV_VERSION ".lib")
+#define OPENCV_VERSION CVAUX_STR(CV_VERSION_EPOCH)"" CVAUX_STR(CV_VERSION_MAJOR)"" CVAUX_STR(CV_VERSION_MINOR)
+#pragma comment(lib, "opencv_core" OPENCV_VERSION LIB_SUFFIX)
+#pragma comment(lib, "opencv_imgproc" OPENCV_VERSION LIB_SUFFIX)
+#pragma comment(lib, "opencv_highgui" OPENCV_VERSION LIB_SUFFIX)
 #endif
 
 

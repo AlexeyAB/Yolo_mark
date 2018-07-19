@@ -474,8 +474,10 @@ int main(int argc, char *argv[])
 
 			if (undo) {
 				undo = false;
-				full_image.copyTo(full_image_roi);
-				current_coord_vec.pop_back();
+				if(current_coord_vec.size() > 0) {
+					full_image.copyTo(full_image_roi);
+					current_coord_vec.pop_back();
+				}
 			}
 
 			if (selected)

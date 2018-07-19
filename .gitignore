@@ -1,0 +1,6 @@
+# Build files
+/CMakeCache.txt
+/CMakeFiles/
+/Makefile
+/cmake_install.cmake
+/yolo_mark

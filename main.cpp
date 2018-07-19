@@ -41,7 +41,7 @@ std::atomic<bool> clear_marks;
 std::atomic<int> x_start, y_start;
 std::atomic<int> x_end, y_end;
 std::atomic<int> x_size, y_size;
-std::atomic<bool> draw_select, selected;
+std::atomic<bool> draw_select, selected, undo;
 
 std::atomic<int> add_id_img;
 Rect prev_img_rect(0, 0, 50, 100);
@@ -472,6 +472,11 @@ int main(int argc, char *argv[])
 				rectangle(frame, rect_dst, color, 2);
 			}
 
+			if (undo) {
+				undo = false;
+				full_image.copyTo(full_image_roi);
+				current_coord_vec.pop_back();
+			}
 
 			if (selected)
 			{
@@ -656,6 +661,10 @@ int main(int argc, char *argv[])
 
 			switch (pressed_key)
 			{
+			case 122:		// z
+			    undo = true;
+				break;
+
 			case 32:        // SPACE
 			case 1048608:	// SPACE
 				++trackbar_value;

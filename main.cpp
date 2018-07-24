@@ -38,6 +38,12 @@ using namespace cv;
 std::atomic<bool> right_button_click;
 std::atomic<bool> clear_marks;
 
+std::atomic<bool> show_help;
+
+std::atomic<bool> toggle_mark_line_width;
+std::atomic<int> mark_line_width(2); // default mark line width is 2 pixels.
+const int MAX_MARK_LINE_WIDTH = 3;
+
 std::atomic<int> x_start, y_start;
 std::atomic<int> x_end, y_end;
 std::atomic<int> x_size, y_size;
@@ -557,6 +563,12 @@ int main(int argc, char *argv[])
 				}
 			}
 
+			if (toggle_mark_line_width == true)
+			{
+				toggle_mark_line_width = false;
+				mark_line_width = mark_line_width % MAX_MARK_LINE_WIDTH + 1;
+			}
+
 			if (clear_marks == true)
 			{
 				clear_marks = false;
@@ -601,7 +613,7 @@ int main(int argc, char *argv[])
 
 				putText(full_image_roi, std::to_string(i.id) + synset_name,
 					i.abs_rect.tl() + Point2f(2, 22), FONT_HERSHEY_SIMPLEX, 0.8, color_rect, 2);
-				rectangle(full_image_roi, i.abs_rect, color_rect, 2);
+				rectangle(full_image_roi, i.abs_rect, color_rect, mark_line_width);
 			}
 
 
@@ -617,10 +629,21 @@ int main(int argc, char *argv[])
 				putText(full_image_roi, obj_str, Point2i(0, 21), FONT_HERSHEY_DUPLEX, 0.8, Scalar(50, 200, 100), 1);
 			}
 
-			putText(full_image_roi,
-				"<- prev_img     -> next_img     space - next_img     c - clear_marks     n - one_object_per_img    0-9 - obj_id    ESC - exit",
-				Point2i(0, 45), FONT_HERSHEY_SIMPLEX, 0.6, Scalar(50, 10, 10), 2);
-
+			if (show_help)
+			{
+				putText(full_image_roi,
+					"<- prev_img     -> next_img     space - next_img     c - clear_marks     n - one_object_per_img    0-9 - obj_id",
+					Point2i(0, 45), FONT_HERSHEY_SIMPLEX, 0.6, Scalar(50, 10, 10), 2);
+				putText(full_image_roi,
+					"ESC - exit  w - line width",
+					Point2i(0, 80), FONT_HERSHEY_SIMPLEX, 0.6, Scalar(50, 10, 10), 2);
+			}
+			else
+			{
+				putText(full_image_roi,
+					"h - show help",
+					Point2i(0, 45), FONT_HERSHEY_SIMPLEX, 0.6, Scalar(50, 10, 10), 2);
+			}
 
 
 			// arrows
@@ -696,6 +719,13 @@ int main(int argc, char *argv[])
 				next_by_click = !next_by_click;
 				full_image.copyTo(full_image_roi);
 				break;
+			case 'w':       // w
+			case 1048695:   // w
+				toggle_mark_line_width = true;
+			break;
+			case 'h':
+				show_help = !show_help;
+			break;
 			default:
 				;
 			}

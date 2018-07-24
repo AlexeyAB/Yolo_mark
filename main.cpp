@@ -39,8 +39,8 @@ std::atomic<bool> right_button_click;
 std::atomic<bool> clear_marks;
 
 std::atomic<bool> show_help;
+std::atomic<bool> exit_flag(false);
 
-std::atomic<bool> toggle_mark_line_width;
 std::atomic<int> mark_line_width(2); // default mark line width is 2 pixels.
 const int MAX_MARK_LINE_WIDTH = 3;
 
@@ -340,7 +340,7 @@ int main(int argc, char *argv[])
 		do {
 			//trackbar_value = min(max(0, trackbar_value), (int)jpg_filenames_path.size() - 1);
 
-			if (old_trackbar_value != trackbar_value)
+			if (old_trackbar_value != trackbar_value || exit_flag)
 			{
 				trackbar_value = min(max(0, trackbar_value), (int)jpg_filenames_path.size() - 1);
 				setTrackbarPos(trackbar_name, window_name, trackbar_value);
@@ -563,12 +563,6 @@ int main(int argc, char *argv[])
 				}
 			}
 
-			if (toggle_mark_line_width == true)
-			{
-				toggle_mark_line_width = false;
-				mark_line_width = mark_line_width % MAX_MARK_LINE_WIDTH + 1;
-			}
-
 			if (clear_marks == true)
 			{
 				clear_marks = false;
@@ -612,7 +606,7 @@ int main(int argc, char *argv[])
 				Scalar color_rect(red, green, blue);    // Scalar color_rect(100, 200, 100);
 
 				putText(full_image_roi, std::to_string(i.id) + synset_name,
-					i.abs_rect.tl() + Point2f(2, 22), FONT_HERSHEY_SIMPLEX, 0.8, color_rect, 2);
+					i.abs_rect.tl() + Point2f(2, 22), FONT_HERSHEY_SIMPLEX, 0.8, color_rect, mark_line_width);
 				rectangle(full_image_roi, i.abs_rect, color_rect, mark_line_width);
 			}
 
@@ -635,7 +629,7 @@ int main(int argc, char *argv[])
 					"<- prev_img     -> next_img     space - next_img     c - clear_marks     n - one_object_per_img    0-9 - obj_id",
 					Point2i(0, 45), FONT_HERSHEY_SIMPLEX, 0.6, Scalar(50, 10, 10), 2);
 				putText(full_image_roi,
-					"ESC - exit  w - line width",
+					"ESC - exit   w - line width   z - undo", //   h - disable help",
 					Point2i(0, 80), FONT_HERSHEY_SIMPLEX, 0.6, Scalar(50, 10, 10), 2);
 			}
 			else
@@ -678,15 +672,17 @@ int main(int argc, char *argv[])
 
 			if (pressed_key >= 0)
 				for (int i = 0; i < 5; ++i) cv::waitKey(1);
-
-			if (pressed_key == 27 || pressed_key == 1048603)  break;  // ESC - exit
+			
+			if (exit_flag) break;	// exit after saving
+			if (pressed_key == 27 || pressed_key == 1048603) exit_flag = true;// break;  // ESC - save & exit
 
 			if (pressed_key >= '0' && pressed_key <= '9') current_obj_id = pressed_key - '0';   // 0 - 9
 			if (pressed_key >= 1048624 && pressed_key <= 1048633) current_obj_id = pressed_key - 1048624;   // 0 - 9
 
 			switch (pressed_key)
 			{
-			case 122:		// z
+			case 'z':		// z
+			case 1048698:	// z
 			    undo = true;
 				break;
 
@@ -721,9 +717,10 @@ int main(int argc, char *argv[])
 				break;
 			case 'w':       // w
 			case 1048695:   // w
-				toggle_mark_line_width = true;
+				mark_line_width = mark_line_width % MAX_MARK_LINE_WIDTH + 1;
 			break;
-			case 'h':
+			case 'h':		// h
+			case 1048680:	// h
 				show_help = !show_help;
 			break;
 			default:

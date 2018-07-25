@@ -637,7 +637,7 @@ int main(int argc, char *argv[])
 					"<- prev_img     -> next_img     space - next_img     c - clear_marks     n - one_object_per_img    0-9 - obj_id",
 					Point2i(0, 45), FONT_HERSHEY_SIMPLEX, 0.6, Scalar(50, 10, 10), 2);
 				putText(full_image_roi,
-					"ESC - exit   w - line width   z - undo", //   h - disable help",
+					"ESC - exit   w - line width   k - hide obj_name   z - undo", //   h - disable help",
 					Point2i(0, 80), FONT_HERSHEY_SIMPLEX, 0.6, Scalar(50, 10, 10), 2);
 			}
 			else
@@ -732,6 +732,7 @@ int main(int argc, char *argv[])
 				show_help = !show_help;
 			break;
 			case 'k':
+			case 1048683:
 				show_mark_class = !show_mark_class;
 				break;
 			default:

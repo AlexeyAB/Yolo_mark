@@ -33,8 +33,9 @@ Supported both: OpenCV 2.x and OpenCV 3.x
 3. To training for your custom objects, you should change 2 lines in file `x64/Release/yolo-obj.cfg`:
 
  * set number of classes (objects): https://github.com/AlexeyAB/Yolo_mark/blob/master/x64/Release/yolo-obj.cfg#L230
- * set `filter`-value equal to `(classes + 5)*5`: https://github.com/AlexeyAB/Yolo_mark/blob/master/x64/Release/yolo-obj.cfg#L224
-
+ * set `filter`-value 
+   * For Yolov2 `(classes + 5)*5`: https://github.com/AlexeyAB/Yolo_mark/blob/master/x64/Release/yolo-obj.cfg#L224
+   * For Yolov3 `(classes + 5)*3`
 
  3.1 Download pre-trained weights for the convolutional layers (76 MB): http://pjreddie.com/media/files/darknet19_448.conv.23 
  

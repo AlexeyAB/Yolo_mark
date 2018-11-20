@@ -11,7 +11,9 @@
     ```
     cmake .
     make
+    chmod +x linux_mark.sh
     ./linux_mark.sh
+  
     ```
 
 Supported both: OpenCV 2.x and OpenCV 3.x

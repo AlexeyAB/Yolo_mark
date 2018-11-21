@@ -567,6 +567,19 @@ int main(int argc, char *argv[])
 				}
 			}
 
+            // Draw crosshair
+            {
+                const cv::Scalar crosshair_colour(200, 200, 200); // Crosshair colour: light grey
+                const int offset = preview.rows; // Vertical offset
+
+                // Only draw in image area
+                if (y_end >= offset)
+                {
+                    cv::line(frame, cv::Point(0, y_end), cv::Point(frame.size().width, y_end), crosshair_colour);
+                    cv::line(frame, cv::Point(x_end, offset), cv::Point(x_end, frame.size().height), crosshair_colour);
+                }
+            }
+
 			if (clear_marks == true)
 			{
 				clear_marks = false;

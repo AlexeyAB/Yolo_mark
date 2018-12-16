@@ -36,6 +36,8 @@
 using namespace cv;
 
 std::atomic<bool> right_button_click;
+std::atomic<int> move_rect_id;
+std::atomic<bool> move_rect;
 std::atomic<bool> clear_marks;
 
 std::atomic<bool> show_help;
@@ -87,7 +89,15 @@ void callback_mouse_click(int event, int x, int y, int flags, void* user_data)
     else if (event == cv::EVENT_RBUTTONDOWN)
     {
         right_button_click = true;
+
+        x_start = x;
+        y_start = y;
         std::cout << "cv::EVENT_RBUTTONDOWN \n";
+    }
+    else if (event == cv::EVENT_RBUTTONUP)
+    {
+        right_button_click = false;
+        move_rect = true;
     }
     if (event == cv::EVENT_RBUTTONDBLCLK)
     {
@@ -351,6 +361,7 @@ int main(int argc, char *argv[])
 				trackbar_value = min(max(0, trackbar_value), (int)jpg_filenames_path.size() - 1);
 				setTrackbarPos(trackbar_name, window_name, trackbar_value);
 				frame(Rect(0, 0, frame.cols, preview.rows)) = Scalar::all(0);
+                move_rect_id = -1;
 
 				// save current coords
 				if (old_trackbar_value >= 0) // && current_coord_vec.size() > 0) // Yolo v2 can processes background-image without objects
@@ -619,25 +630,6 @@ int main(int argc, char *argv[])
 			}
 
 
-
-			if (right_button_click == true)
-			{
-				right_button_click = false;
-                
-                /*
-				if (next_by_click)
-				{
-					++trackbar_value;
-				}
-				else
-				{
-					full_image.copyTo(full_image_roi);
-					current_coord_vec.clear();
-				}
-                */
-			}
-
-
 			if (old_current_obj_id != current_obj_id)
 			{
 				full_image.copyTo(full_image_roi);
@@ -686,6 +678,31 @@ int main(int argc, char *argv[])
                 if (selected_id >= 0) current_coord_vec.erase(current_coord_vec.begin() + selected_id);
             }
 
+            // show moving rect
+            if (right_button_click == true)
+            {
+                if (move_rect_id < 0) move_rect_id = selected_id;
+
+                int x_delta = x_end - x_start;
+                int y_delta = y_end - y_start;
+                auto rect = current_coord_vec[move_rect_id].abs_rect;
+                rect.x += x_delta;
+                rect.y += y_delta;
+
+                Scalar color_rect = Scalar(300, 200, 100);
+                rectangle(full_image_roi, rect, color_rect, mark_line_width);
+            }
+
+            // complete moving label rect
+            if (move_rect && move_rect_id >= 0) {
+                int x_delta = x_end - x_start;
+                int y_delta = y_end - y_start;
+                current_coord_vec[move_rect_id].abs_rect.x += x_delta;
+                current_coord_vec[move_rect_id].abs_rect.y += y_delta;
+                move_rect = false;
+                move_rect_id = -1;
+            }
+
 
             if (next_by_click) {
                 putText(full_image_roi, "Mode: 1 mark per image (next by click)",
@@ -707,7 +724,7 @@ int main(int argc, char *argv[])
 					"<- prev_img     -> next_img     space - next_img     c - clear_marks     n - one_object_per_img    0-9 - obj_id",
 					Point2i(0, 45), FONT_HERSHEY_SIMPLEX, 0.6, Scalar(50, 10, 10), 2);
 				putText(full_image_roi,
-					"ESC - exit   w - line width   k - hide obj_name   z - delete last   r - delete selected", //   h - disable help",
+					"ESC - exit   w - line width   k - hide obj_name   z - delete last   r - delete selected   R-button-mouse - move box", //   h - disable help",
 					Point2i(0, 80), FONT_HERSHEY_SIMPLEX, 0.6, Scalar(50, 10, 10), 2);
 			}
 			else

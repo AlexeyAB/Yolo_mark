@@ -583,11 +583,11 @@ int main(int argc, char *argv[])
 					const int hor_max = draw_select ? std::max(y_end + mouse_offset, y_start + mouse_offset) : y_end + mouse_offset;
 
 					// Draw crosshair onto empty canvas (draws high bits on low-bit-canvas)
-					cv::Mat crosshair_mask(frame.size(), CV_8UC1, bit_low);
-					cv::line(crosshair_mask, cv::Point(0, y_end), cv::Point(ver_min, y_end), bit_high); // Horizontal, left to mouse
-					cv::line(crosshair_mask, cv::Point(ver_max, y_end), cv::Point(crosshair_mask.size().width, y_end), bit_high); // Horizontal, mouse to right
-					cv::line(crosshair_mask, cv::Point(x_end, offset), cv::Point(x_end, std::max(offset, hor_min)), bit_high); // Vertical, top to mouse
-					cv::line(crosshair_mask, cv::Point(x_end, hor_max), cv::Point(x_end, crosshair_mask.size().height), bit_high); // Vertical, mouse to bottom
+                    cv::Mat crosshair_mask(frame.size(), CV_8UC1, cv::Scalar(bit_low));
+					cv::line(crosshair_mask, cv::Point(0, y_end), cv::Point(ver_min, y_end), cv::Scalar(bit_high)); // Horizontal, left to mouse
+					cv::line(crosshair_mask, cv::Point(ver_max, y_end), cv::Point(crosshair_mask.size().width, y_end), cv::Scalar(bit_high)); // Horizontal, mouse to right
+					cv::line(crosshair_mask, cv::Point(x_end, offset), cv::Point(x_end, std::max(offset, hor_min)), cv::Scalar(bit_high)); // Vertical, top to mouse
+					cv::line(crosshair_mask, cv::Point(x_end, hor_max), cv::Point(x_end, crosshair_mask.size().height), cv::Scalar(bit_high)); // Vertical, mouse to bottom
 
 					// Draw crosshair onto frame copy
 					cv::Mat crosshair_frame(frame.size(), frame.type());

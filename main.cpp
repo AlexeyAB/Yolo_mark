@@ -44,6 +44,7 @@ std::atomic<bool> exit_flag(false);
 std::atomic<int> mark_line_width(2); // default mark line width is 2 pixels.
 const int MAX_MARK_LINE_WIDTH = 3;
 std::atomic<bool> show_mark_class(true);
+std::atomic<bool> delete_selected(false);
 
 std::atomic<int> x_start, y_start;
 std::atomic<int> x_end, y_end;
@@ -85,8 +86,8 @@ void callback_mouse_click(int event, int x, int y, int flags, void* user_data)
     }
     else if (event == cv::EVENT_RBUTTONDOWN)
     {
-        //right_button_click = true;
-        //std::cout << "cv::EVENT_RBUTTONDOWN \n";
+        right_button_click = true;
+        std::cout << "cv::EVENT_RBUTTONDOWN \n";
     }
     if (event == cv::EVENT_RBUTTONDBLCLK)
     {
@@ -186,6 +187,7 @@ int main(int argc, char *argv[])
 		std::vector<std::string> jpg_in_train;
 		std::vector<std::string> synset_txt;
 
+        // image-paths to txt-paths
 		for (auto &i : filenames_in_folder)
 		{
 			int pos_filename = 0;
@@ -221,7 +223,7 @@ int main(int argc, char *argv[])
 			return 0;
 		}
 
-		// check whether there is a files with the same name (but different extensions)
+		// check whether there are files with the same names (but different extensions)
 		{
 			auto sorted_names_without_ext = jpg_filenames_without_ext;
 			std::sort(sorted_names_without_ext.begin(), sorted_names_without_ext.end());
@@ -310,10 +312,12 @@ int main(int argc, char *argv[])
 
 		size_t const preview_number = frame.cols / preview.cols;
 
+        // label coordinates
 		struct coord_t {
 			Rect_<float> abs_rect;
 			int id;
 		};
+        // labels on the current image
 		std::vector<coord_t> current_coord_vec;
 		Size current_img_size;
 
@@ -341,6 +345,7 @@ int main(int argc, char *argv[])
 		do {
 			//trackbar_value = min(max(0, trackbar_value), (int)jpg_filenames_path.size() - 1);
 
+            // selected new image
 			if (old_trackbar_value != trackbar_value || exit_flag)
 			{
 				trackbar_value = min(max(0, trackbar_value), (int)jpg_filenames_path.size() - 1);
@@ -447,6 +452,7 @@ int main(int argc, char *argv[])
 
 					std::string const jpg_filename = jpg_filenames[trackbar_value + i];
 					std::string const filename_without_ext = jpg_filename.substr(0, jpg_filename.find_last_of("."));
+                    // green check-mark on the preview image if there is a lebel txt-file for this image
 					if (!std::binary_search(difference_filenames.begin(), difference_filenames.end(), filename_without_ext))
 					{
 						line(dst_roi, Point2i(80, 88), Point2i(85, 93), Scalar(20, 70, 20), 5);
@@ -455,6 +461,7 @@ int main(int argc, char *argv[])
 						line(dst_roi, Point2i(80, 88), Point2i(85, 93), Scalar(50, 200, 100), 2);
 						line(dst_roi, Point2i(85, 93), Point2i(93, 85), Scalar(50, 200, 100), 2);
 					}
+                    
 				}
 				std::cout << " trackbar_value = " << trackbar_value << std::endl;
 
@@ -487,6 +494,7 @@ int main(int argc, char *argv[])
 				}
 			}
 
+            // marking is completed (left mouse button is OFF)
 			if (selected)
 			{
 				selected = false;
@@ -524,6 +532,7 @@ int main(int argc, char *argv[])
 			std::string current_synset_name;
 			if (current_obj_id < synset_txt.size()) current_synset_name = "   - " + synset_txt[current_obj_id];
 
+            // show X and Y coords of mouse
 			if (show_mouse_coords) {
 				full_image.copyTo(full_image_roi);
 				int const x_inside = std::min((int)x_end, full_image_roi.cols);
@@ -546,7 +555,7 @@ int main(int argc, char *argv[])
 				//putText(full_image_roi, text, Point2i(800, 20), FONT_HERSHEY_SIMPLEX, 0.7, Scalar(220, 120, 120), 1);
 			}
 
-
+            // marking is in progress (left mouse button is ON)
 			if (draw_select)
 			{
 				if (add_id_img != 0) trackbar_value += add_id_img;
@@ -600,6 +609,7 @@ int main(int argc, char *argv[])
 				}
 			}
 
+            // remove all labels from this image
 			if (clear_marks == true)
 			{
 				clear_marks = false;
@@ -608,9 +618,13 @@ int main(int argc, char *argv[])
 				current_coord_vec.clear();
 			}
 
+
+
 			if (right_button_click == true)
 			{
 				right_button_click = false;
+                
+                /*
 				if (next_by_click)
 				{
 					++trackbar_value;
@@ -620,6 +634,7 @@ int main(int argc, char *argv[])
 					full_image.copyTo(full_image_roi);
 					current_coord_vec.clear();
 				}
+                */
 			}
 
 
@@ -630,9 +645,12 @@ int main(int argc, char *argv[])
 				setTrackbarPos(trackbar_name_2, window_name, current_obj_id);
 			}
 
-
-			for (auto &i : current_coord_vec)
+            int selected_id = -1;
+            // draw all labels
+			//for (auto &i : current_coord_vec)
+            for(size_t k = 0; k < current_coord_vec.size(); ++k)
 			{
+                auto &i = current_coord_vec.at(k);
 				std::string synset_name;
 				if (i.id < synset_txt.size()) synset_name = " - " + synset_txt[i.id];
 
@@ -642,6 +660,17 @@ int main(int argc, char *argv[])
 				int blue = (offset + 140) % 255 * ((i.id + 0) % 3);
 				Scalar color_rect(red, green, blue);    // Scalar color_rect(100, 200, 100);
 
+                // selected rect
+                if (i.abs_rect.x < x_end && (i.abs_rect.x + i.abs_rect.width) > x_end &&
+                    (i.abs_rect.y + preview.rows) < y_end && (i.abs_rect.y + i.abs_rect.height + preview.rows) > y_end)
+                {
+                    if (selected_id < 0) {
+                        color_rect = Scalar(100, 200, 300);
+                        selected_id = k;
+                        rectangle(full_image_roi, i.abs_rect, color_rect, mark_line_width*2);
+                    }
+                }
+
 				if (show_mark_class)
 				{
 					putText(full_image_roi, std::to_string(i.id) + synset_name,
@@ -650,11 +679,19 @@ int main(int argc, char *argv[])
 
 				rectangle(full_image_roi, i.abs_rect, color_rect, mark_line_width);
 			}
+            
+            // remove selected rect
+            if (delete_selected) {
+                delete_selected = false;
+                if (selected_id >= 0) current_coord_vec.erase(current_coord_vec.begin() + selected_id);
+            }
 
 
-			if (next_by_click)
-				putText(full_image_roi, "Mode: 1 mark per image (next by click)",
-					Point2i(850, 20), FONT_HERSHEY_SIMPLEX, 0.6, Scalar(50, 170, 100), 2);
+            if (next_by_click) {
+                putText(full_image_roi, "Mode: 1 mark per image (next by click)",
+                    Point2i(850, 20), FONT_HERSHEY_SIMPLEX, 0.6, Scalar(50, 170, 100), 2);
+            }
+
 
 			{
 				std::string const obj_str = "Object id: " + std::to_string(current_obj_id) + current_synset_name;
@@ -670,7 +707,7 @@ int main(int argc, char *argv[])
 					"<- prev_img     -> next_img     space - next_img     c - clear_marks     n - one_object_per_img    0-9 - obj_id",
 					Point2i(0, 45), FONT_HERSHEY_SIMPLEX, 0.6, Scalar(50, 10, 10), 2);
 				putText(full_image_roi,
-					"ESC - exit   w - line width   k - hide obj_name   z - undo", //   h - disable help",
+					"ESC - exit   w - line width   k - hide obj_name   z - delete last   r - delete selected", //   h - disable help",
 					Point2i(0, 80), FONT_HERSHEY_SIMPLEX, 0.6, Scalar(50, 10, 10), 2);
 			}
 			else
@@ -768,6 +805,10 @@ int main(int argc, char *argv[])
 			case 1048683:
 				show_mark_class = !show_mark_class;
 				break;
+            case 'r':       // r
+            case 1048690:   // r
+                delete_selected = true;
+                break;
 			default:
 				;
 			}

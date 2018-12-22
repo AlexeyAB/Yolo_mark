@@ -62,7 +62,7 @@ As a result, many frames will be collected in the directory `data/img`. Then you
 #### Here are:
 
 * /x64/Release/
-  * `yolo_mark.cmd` - example hot to use yolo mark: `yolo_mark.exe data/img data/train.txt data/obj.names`
+  * `yolo_mark.cmd` - example how to use yolo mark: `yolo_mark.exe data/img data/train.txt data/obj.names`
   * `train_obj.cmd` - example how to train yolo for your custom objects (put this file near with darknet.exe): `darknet.exe detector train data/obj.data yolo-obj.cfg darknet19_448.conv.23`
   * `yolo-obj.cfg` - example of yoloV3-neural-network for 2 object
 * /x64/Release/data/

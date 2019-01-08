@@ -14,6 +14,14 @@
     ./linux_mark.sh
     ```
 
+* To compile on **Mac OSX** type in console 3 commands:
+    ```
+    brew install cmake
+    cmake .
+    make
+    ./osx_mark.sh
+    ```
+
 Supported both: OpenCV 2.x and OpenCV 3.x
 
 --------
@@ -21,6 +29,7 @@ Supported both: OpenCV 2.x and OpenCV 3.x
 1. To test, simply run 
   * **on Windows:** `x64/Release/yolo_mark.cmd`
   * **on Linux:** `./linux_mark.sh`
+  * **on Mac OSX:** `./osx_mark.sh`
 
 2. To use for labeling your custom images:
 

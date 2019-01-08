@@ -151,7 +151,11 @@ int main(int argc, char *argv[])
 		if (argc >= 4 && train_filename == "cap_video") {
 			const std::string videofile = synset_filename;
 			cv::VideoCapture cap(videofile);
+			#ifdef __APPLE__
+			const int fps = cap.get(CAP_PROP_FPS);
+			#elif 
 			const int fps = cap.get(CV_CAP_PROP_FPS);
+			#endif
 			int frame_counter = 0, image_counter = 0;
 			float save_each_frames = 50;
 			if (argc >= 5) save_each_frames = std::stoul(std::string(argv[4]));
@@ -480,8 +484,13 @@ int main(int argc, char *argv[])
 
 				marks_changed = false;
 
+				#ifdef __APPLE__
+				rectangle(frame, prev_img_rect, Scalar(100, 100, 100), FILLED);
+				rectangle(frame, next_img_rect, Scalar(100, 100, 100), FILLED);
+				#elif
 				rectangle(frame, prev_img_rect, Scalar(100, 100, 100), CV_FILLED);
 				rectangle(frame, next_img_rect, Scalar(100, 100, 100), CV_FILLED);
+				#endif
 			}
 
 			trackbar_value = min(max(0, trackbar_value), (int)jpg_filenames_path.size() - 1);

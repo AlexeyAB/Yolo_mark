@@ -39,6 +39,7 @@ std::atomic<bool> right_button_click;
 std::atomic<int> move_rect_id;
 std::atomic<bool> move_rect;
 std::atomic<bool> clear_marks;
+std::atomic<bool> copy_previous_marks(false);
 
 std::atomic<bool> show_help;
 std::atomic<bool> exit_flag(false);
@@ -148,11 +149,13 @@ int main(int argc, char *argv[])
 		}
 
 		// capture frames from video file - 1 frame per 3 seconds of video
-		if (argc >= 4 && train_filename == "cap_video") {
+		if (argc >= 4 && (train_filename == "cap_video" || train_filename == "cap_video_backward")) {
 			const std::string videofile = synset_filename;
 			cv::VideoCapture cap(videofile);
 			const int fps = cap.get(CV_CAP_PROP_FPS);
-			int frame_counter = 0, image_counter = 0;
+            int frame_counter = 0, image_counter = 0;
+            int backward = (train_filename == "cap_video_backward") ? 1 : 0;
+            if (backward) image_counter = 99999999; // 99M
 			float save_each_frames = 50;
 			if (argc >= 5) save_each_frames = std::stoul(std::string(argv[4]));
 
@@ -172,7 +175,11 @@ int main(int argc, char *argv[])
 				if (pressed_key == 27 || pressed_key == 1048603) break;  // ESC - exit (OpenCV 2.x / 3.x)
 				if (frame_counter++ >= save_each_frames) {		// save frame for each 3 second
 					frame_counter = 0;
-					std::string img_name = images_path + "/" + filename_without_ext + "_" + std::to_string(image_counter++) + ".jpg";
+                    std::stringstream image_counter_ss;
+                    image_counter_ss << std::setw(8) << std::setfill('0') << image_counter;
+                    if (backward) image_counter--;
+                    else image_counter++;
+					std::string img_name = images_path + "/" + filename_without_ext + "_" + image_counter_ss.str() + ".jpg";
 					std::cout << "saved " << img_name << std::endl;
 					cv::imwrite(img_name, frame);
 				}
@@ -439,7 +446,9 @@ int main(int argc, char *argv[])
 							std::string const txt_filename = jpg_filename.substr(0, jpg_filename.find_last_of(".")) + ".txt";
 							//std::cout << (images_path + "/" + txt_filename) << std::endl;
 							std::ifstream ifs(images_path + "/" + txt_filename);
-							current_coord_vec.clear();
+                            if (copy_previous_marks) copy_previous_marks = false;
+                            else current_coord_vec.clear();
+
 							for (std::string line; getline(ifs, line);)
 							{
 								std::stringstream ss(line);
@@ -724,7 +733,7 @@ int main(int argc, char *argv[])
 					"<- prev_img     -> next_img     space - next_img     c - clear_marks     n - one_object_per_img    0-9 - obj_id",
 					Point2i(0, 45), FONT_HERSHEY_SIMPLEX, 0.6, Scalar(50, 10, 10), 2);
 				putText(full_image_roi,
-					"ESC - exit   w - line width   k - hide obj_name   z - delete last   r - delete selected   R-button-mouse - move box", //   h - disable help",
+					"ESC - exit   w - line width   k - hide obj_name   p - copy previous   r - delete selected   R-button-mouse - move box", //   h - disable help",
 					Point2i(0, 80), FONT_HERSHEY_SIMPLEX, 0.6, Scalar(50, 10, 10), 2);
 			}
 			else
@@ -776,10 +785,16 @@ int main(int argc, char *argv[])
 
 			switch (pressed_key)
 			{
-			case 'z':		// z
-			case 1048698:	// z
-			    undo = true;
-				break;
+			//case 'z':		// z
+			//case 1048698:	// z
+			//    undo = true;
+			//	break;
+
+            case 'p':       // p
+            case 1048688:	// p
+                copy_previous_marks = 1;
+                ++trackbar_value;
+                break;
 
 			case 32:        // SPACE
 			case 1048608:	// SPACE

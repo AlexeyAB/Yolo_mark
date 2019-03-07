@@ -7,6 +7,7 @@
 #include <locale>
 #include <future>	// C++11: async(); feature<>;
 #include <iostream>
+#include <iomanip>
 #include <fstream>  // std::ofstream
 #include <algorithm> // std::unique
 
@@ -794,6 +795,12 @@ int main(int argc, char *argv[])
             case 1048688:	// p
                 copy_previous_marks = 1;
                 ++trackbar_value;
+                break;
+
+            case 'o':       // o
+            case 1048687:	// o
+                copy_previous_marks = 1;
+                --trackbar_value;
                 break;
 
 			case 32:        // SPACE

@@ -40,6 +40,8 @@ std::atomic<bool> right_button_click;
 std::atomic<int> move_rect_id;
 std::atomic<bool> move_rect;
 std::atomic<bool> clear_marks;
+std::atomic<bool> wheel_increase_label_class;
+std::atomic<bool> wheel_decrease_label_class;
 std::atomic<bool> copy_previous_marks(false);
 
 std::atomic<bool> show_help;
@@ -109,6 +111,19 @@ void callback_mouse_click(int event, int x, int y, int flags, void* user_data)
     {
         x_end = max(x, 0);
         y_end = max(y, 0);
+    }
+    else if (event == cv::EVENT_MOUSEWHEEL) //catch mouse wheel movement
+    {
+    	if (getMouseWheelDelta(flags)>0)
+    	{
+            wheel_increase_label_class = false;
+            wheel_decrease_label_class = true;
+    	}
+        else
+        {
+        	wheel_increase_label_class = true;
+			wheel_decrease_label_class = false;
+        }
     }
 }
 
@@ -774,6 +789,19 @@ int main(int argc, char *argv[])
 #else
 			int pressed_key = cv::waitKey(20);		// OpenCV 2.x
 #endif
+			// handle mouse wheel event
+			if (wheel_increase_label_class)
+			{
+				wheel_increase_label_class = false;
+				current_obj_id += 1;
+				current_obj_id = min(max_object_id, current_obj_id);
+			}
+			if (wheel_decrease_label_class)
+			{
+				wheel_decrease_label_class = false;
+				current_obj_id -= 1;
+				current_obj_id = max(0, current_obj_id);
+			}
 
 			if (pressed_key >= 0)
 				for (int i = 0; i < 5; ++i) cv::waitKey(1);
@@ -808,11 +836,14 @@ int main(int argc, char *argv[])
 				++trackbar_value;
 				break;
 
+			case 'a':
 			case 2424832:   // <-
 			case 65361:     // <-
 			case 91:		// [
 				--trackbar_value;
 				break;
+
+			case 's':
 			case 2555904:   // ->
 			case 65363:     // ->
 			case 93:		// ]

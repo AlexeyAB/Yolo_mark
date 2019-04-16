@@ -1,0 +1,17 @@
+# https://hub.docker.com/search?q=opencv&type=image
+version: 2.0
+jobs:
+  build:
+    docker:
+       - image: czentye/opencv-video-minimal:v4.1.0 
+    working_directory: ~/work
+    steps:
+      - checkout
+      - run: cmake . && make
+  build:
+    docker:
+       - image: czentye/opencv-video-minimal:v3.1.0
+    working_directory: ~/work
+    steps:
+      - checkout
+      - run: cmake . && make

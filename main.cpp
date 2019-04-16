@@ -33,6 +33,9 @@
 #pragma comment(lib, "opencv_highgui" OPENCV_VERSION LIB_SUFFIX)
 #endif
 
+#ifndef CV_FILLED
+#define CV_FILLED cv::FILLED
+#endif
 
 using namespace cv;
 
@@ -153,7 +156,11 @@ int main(int argc, char *argv[])
 		if (argc >= 4 && (train_filename == "cap_video" || train_filename == "cap_video_backward")) {
 			const std::string videofile = synset_filename;
 			cv::VideoCapture cap(videofile);
-			const int fps = cap.get(CV_CAP_PROP_FPS);
+#ifndef CV_VERSION_EPOCH    // OpenCV 3.x
+            const int fps = cap.get(cv::CAP_PROP_FPS);
+#else                        // OpenCV 2.x
+            const int fps = cap.get(CV_CAP_PROP_FPS);
+#endif
             int frame_counter = 0, image_counter = 0;
             int backward = (train_filename == "cap_video_backward") ? 1 : 0;
             if (backward) image_counter = 99999999; // 99M

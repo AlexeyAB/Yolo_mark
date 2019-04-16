@@ -15,6 +15,8 @@
 #include <opencv2/core/version.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
+//#include <opencv2/optflow.hpp>
+#include <opencv2/video/tracking.hpp>
 
 #ifdef _DEBUG
 #define LIB_SUFFIX "d.lib"
@@ -37,13 +39,142 @@
 #define CV_FILLED cv::FILLED
 #endif
 
+
 using namespace cv;
+
+
+// label coordinates
+struct coord_t {
+    cv::Rect_<float> abs_rect;
+    int id;
+};
+
+class Tracker_optflow {
+public:
+    const int flow_error;
+
+    Tracker_optflow(int win_size = 15, int max_level = 3, int iterations = 8000, int _flow_error = -1) :
+        flow_error((_flow_error > 0) ? _flow_error : (win_size * 4))
+    {
+        sync_PyrLKOpticalFlow = cv::SparsePyrLKOpticalFlow::create();
+        sync_PyrLKOpticalFlow->setWinSize(cv::Size(win_size, win_size));    // 9, 15, 21, 31
+        sync_PyrLKOpticalFlow->setMaxLevel(max_level);        // +- 3 pt
+
+    }
+
+    // just to avoid extra allocations
+    cv::Mat dst_grey;
+    cv::Mat prev_pts_flow, cur_pts_flow;
+    cv::Mat status, err;
+
+    cv::Mat src_grey;    // used in both functions
+    cv::Ptr<cv::SparsePyrLKOpticalFlow> sync_PyrLKOpticalFlow;
+
+    std::vector<coord_t> cur_bbox_vec;
+    std::vector<bool> good_bbox_vec_flags;
+
+    void update_cur_bbox_vec(std::vector<coord_t> _cur_bbox_vec)
+    {
+        cur_bbox_vec = _cur_bbox_vec;
+        good_bbox_vec_flags = std::vector<bool>(cur_bbox_vec.size(), true);
+        cv::Mat prev_pts, cur_pts_flow;
+
+        for (auto &i : cur_bbox_vec) {
+            float x_center = (i.abs_rect.x + i.abs_rect.width / 2.0F);
+            float y_center = (i.abs_rect.y + i.abs_rect.height / 2.0F);
+            prev_pts.push_back(cv::Point2f(x_center, y_center));
+        }
+
+        if (prev_pts.rows == 0)
+            prev_pts_flow = cv::Mat();
+        else
+            cv::transpose(prev_pts, prev_pts_flow);
+    }
+
+
+    void update_tracking_flow(cv::Mat new_src_mat, std::vector<coord_t> _cur_bbox_vec)
+    {
+        if (new_src_mat.channels() == 1) {
+            src_grey = new_src_mat.clone();
+        }
+        else if (new_src_mat.channels() == 3) {
+            cv::cvtColor(new_src_mat, src_grey, cv::COLOR_BGR2GRAY, 1);
+        }
+        else if (new_src_mat.channels() == 4) {
+            cv::cvtColor(new_src_mat, src_grey, cv::COLOR_BGRA2GRAY, 1);
+        }
+        else {
+            std::cerr << " Warning: new_src_mat.channels() is not: 1, 3 or 4. It is = " << new_src_mat.channels() << " \n";
+            return;
+        }
+        update_cur_bbox_vec(_cur_bbox_vec);
+    }
+
+
+    std::vector<coord_t> tracking_flow(cv::Mat new_dst_mat, bool check_error = true)
+    {
+        if (sync_PyrLKOpticalFlow.empty()) {
+            std::cout << "sync_PyrLKOpticalFlow isn't initialized \n";
+            return cur_bbox_vec;
+        }
+
+        cv::cvtColor(new_dst_mat, dst_grey, cv::COLOR_BGR2GRAY, 1);
+
+        if (src_grey.rows != dst_grey.rows || src_grey.cols != dst_grey.cols) {
+            src_grey = dst_grey.clone();
+            //std::cerr << " Warning: src_grey.rows != dst_grey.rows || src_grey.cols != dst_grey.cols \n";
+            return cur_bbox_vec;
+        }
+
+        if (prev_pts_flow.cols < 1) {
+            return cur_bbox_vec;
+        }
+
+        ////sync_PyrLKOpticalFlow_gpu.sparse(src_grey_gpu, dst_grey_gpu, prev_pts_flow_gpu, cur_pts_flow_gpu, status_gpu, &err_gpu);    // OpenCV 2.4.x
+        sync_PyrLKOpticalFlow->calc(src_grey, dst_grey, prev_pts_flow, cur_pts_flow, status, err);    // OpenCV 3.x
+
+        dst_grey.copyTo(src_grey);
+
+        std::vector<coord_t> result_bbox_vec;
+
+        if (err.rows == cur_bbox_vec.size() && status.rows == cur_bbox_vec.size())
+        {
+            for (size_t i = 0; i < cur_bbox_vec.size(); ++i)
+            {
+                cv::Point2f cur_key_pt = cur_pts_flow.at<cv::Point2f>(0, i);
+                cv::Point2f prev_key_pt = prev_pts_flow.at<cv::Point2f>(0, i);
+
+                float moved_x = cur_key_pt.x - prev_key_pt.x;
+                float moved_y = cur_key_pt.y - prev_key_pt.y;
+
+                if (abs(moved_x) < 100 && abs(moved_y) < 100 && good_bbox_vec_flags[i])
+                    if (err.at<float>(0, i) < flow_error && status.at<unsigned char>(0, i) != 0 &&
+                        ((float)cur_bbox_vec[i].abs_rect.x + moved_x) > 0 && ((float)cur_bbox_vec[i].abs_rect.y + moved_y) > 0)
+                    {
+                        cur_bbox_vec[i].abs_rect.x += moved_x;// +0.5;
+                        cur_bbox_vec[i].abs_rect.y += moved_y;// +0.5;
+                        result_bbox_vec.push_back(cur_bbox_vec[i]);
+                    }
+                    else good_bbox_vec_flags[i] = false;
+                else good_bbox_vec_flags[i] = false;
+
+                //if(!check_error && !good_bbox_vec_flags[i]) result_bbox_vec.push_back(cur_bbox_vec[i]);
+            }
+        }
+
+        prev_pts_flow = cur_pts_flow.clone();
+
+        return result_bbox_vec;
+    }
+
+};
 
 std::atomic<bool> right_button_click;
 std::atomic<int> move_rect_id;
 std::atomic<bool> move_rect;
 std::atomic<bool> clear_marks;
 std::atomic<bool> copy_previous_marks(false);
+std::atomic<bool> tracker_copy_previous_marks(false);
 
 std::atomic<bool> show_help;
 std::atomic<bool> exit_flag(false);
@@ -151,6 +282,10 @@ int main(int argc, char *argv[])
 		if (argc >= 4) {
 			synset_filename = std::string(argv[3]);		// file containing: object names
 		}
+
+        // optical flow tracker
+        Tracker_optflow tracker_optflow;
+        cv::Mat optflow_img;
 
 		// capture frames from video file - 1 frame per 3 seconds of video
 		if (argc >= 4 && (train_filename == "cap_video" || train_filename == "cap_video_backward")) {
@@ -337,11 +472,7 @@ int main(int argc, char *argv[])
 
 		size_t const preview_number = frame.cols / preview.cols;
 
-        // label coordinates
-		struct coord_t {
-			Rect_<float> abs_rect;
-			int id;
-		};
+
         // labels on the current image
 		std::vector<coord_t> current_coord_vec;
 		Size current_img_size;
@@ -445,6 +576,7 @@ int main(int argc, char *argv[])
 
 					if (i == 0)
 					{
+                        optflow_img = img;
 						resize(img, full_image, full_rect_dst.size());
 						full_image.copyTo(full_image_roi);
 						current_img_size = img.size();
@@ -455,6 +587,10 @@ int main(int argc, char *argv[])
 							//std::cout << (images_path + "/" + txt_filename) << std::endl;
 							std::ifstream ifs(images_path + "/" + txt_filename);
                             if (copy_previous_marks) copy_previous_marks = false;
+                            else if (tracker_copy_previous_marks) {
+                                tracker_copy_previous_marks = false;
+                                current_coord_vec = tracker_optflow.tracking_flow(img, false);
+                            }
                             else current_coord_vec.clear();
 
 							for (std::string line; getline(ifs, line);)
@@ -578,8 +714,8 @@ int main(int argc, char *argv[])
 			else
 			{
 				full_image.copyTo(full_image_roi);
-				std::string text = "Show mouse coordinates - press M";
-				putText(full_image_roi, text, Point2i(800, 20), FONT_HERSHEY_SIMPLEX, 0.7, Scalar(100, 50, 50), 2);
+				//std::string text = "Show mouse coordinates - press M";
+				//putText(full_image_roi, text, Point2i(800, 20), FONT_HERSHEY_SIMPLEX, 0.7, Scalar(100, 50, 50), 2);
 				//putText(full_image_roi, text, Point2i(800, 20), FONT_HERSHEY_SIMPLEX, 0.7, Scalar(220, 120, 120), 1);
 			}
 
@@ -738,10 +874,10 @@ int main(int argc, char *argv[])
 			if (show_help)
 			{
 				putText(full_image_roi,
-					"<- prev_img     -> next_img     space - next_img     c - clear_marks     n - one_object_per_img    0-9 - obj_id",
+					"<- prev_img    -> next_img    c - clear_marks    n - one_object_per_img    0-9 - obj_id    m - show coords    ESC - exit",
 					Point2i(0, 45), FONT_HERSHEY_SIMPLEX, 0.6, Scalar(50, 10, 10), 2);
 				putText(full_image_roi,
-					"ESC - exit   w - line width   k - hide obj_name   p - copy previous   r - delete selected   R-button-mouse - move box", //   h - disable help",
+					"w - line width   k - hide obj_name   p - copy previous   o - track objects   r - delete selected   R-mouse - move box", //   h - disable help",
 					Point2i(0, 80), FONT_HERSHEY_SIMPLEX, 0.6, Scalar(50, 10, 10), 2);
 			}
 			else
@@ -806,8 +942,8 @@ int main(int argc, char *argv[])
 
             case 'o':       // o
             case 1048687:	// o
-                copy_previous_marks = 1;
-                --trackbar_value;
+                tracker_copy_previous_marks = 1;
+                ++trackbar_value;
                 break;
 
 			case 32:        // SPACE
@@ -858,6 +994,9 @@ int main(int argc, char *argv[])
 			default:
 				;
 			}
+
+            if(tracker_copy_previous_marks)
+                tracker_optflow.update_tracking_flow(optflow_img, current_coord_vec);
 
 			//if (pressed_key >= 0) std::cout << "pressed_key = " << (int)pressed_key << std::endl;
 

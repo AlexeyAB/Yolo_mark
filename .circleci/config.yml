@@ -3,15 +3,11 @@ version: 2.0
 jobs:
   build:
     docker:
-       - image: czentye/opencv-video-minimal:v4.1.0 
+       - image: czentye/opencv-video-minimal:v4.1.0
+	   - image: czentye/opencv-video-minimal:v3.1.0
     working_directory: ~/work
     steps:
       - checkout
-      - run: cmake . && make
-  build:
-    docker:
-       - image: czentye/opencv-video-minimal:v3.1.0
-    working_directory: ~/work
-    steps:
-      - checkout
+      - setup_remote_docker: 
+          docker_layer_caching: true 
       - run: cmake . && make

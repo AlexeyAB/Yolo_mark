@@ -1,10 +1,11 @@
 # https://hub.docker.com/search?q=opencv&type=image
+# https://hub.docker.com/r/jjanzic/docker-python3-opencv/dockerfile
 version: 2.0
 jobs:
   build:
     docker:
-      - image: czentye/opencv-video-minimal:v4.1.0
-      - image: czentye/opencv-video-minimal:v3.1.0
+      - image: jjanzic/docker-python3-opencv:opencv-4.0.1
+      - image: jjanzic/docker-python3-opencv:opencv-3.2.0
     working_directory: ~/work
     steps:
       - checkout

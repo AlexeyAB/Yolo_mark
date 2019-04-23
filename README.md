@@ -87,10 +87,10 @@ Right | Move box
 
 Shortcut | Description | 
 --- | --- |
-<kbd>r</kbd> | Delete selected box (mouse hovered) |
-<kbd>←</kbd> | Previous image |
 <kbd>→</kbd> | Next image |
-<kbd>c</kbd> | Clear marks |
+<kbd>←</kbd> | Previous image |
+<kbd>r</kbd> | Delete selected box (mouse hovered) |
+<kbd>c</kbd> | Clear all marks on the current image |
 <kbd>p</kbd> | Copy previous mark |
 <kbd>ESC</kbd> | Close application |
 <kbd>n</kbd> | One object per image |

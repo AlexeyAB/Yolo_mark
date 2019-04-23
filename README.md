@@ -87,17 +87,17 @@ Right | Move box
 
 Shortcut | Description | 
 --- | --- |
-<kbd>r/kbd> | Delete selected box (mouse hovered) |
+<kbd>r</kbd> | Delete selected box (mouse hovered) |
 <kbd>←</kbd> | Previous image |
 <kbd>→</kbd> | Next image |
 <kbd>c</kbd> | Clear marks |
-<kbd>p/kbd> | Copy previous mark |
+<kbd>p</kbd> | Copy previous mark |
 <kbd>ESC</kbd> | Close application |
 <kbd>n</kbd> | One object per image |
 <kbd>0-9</kbd> | Object id |
 <kbd>m</kbd> | Show coords |
 <kbd>w</kbd> | Line width |
 <kbd>k</kbd> | Hide object name |
-<kbd>o/kbd> | Track objects |
+<kbd>o</kbd> | Track objects |
 <kbd>h</kbd> | Help |
 

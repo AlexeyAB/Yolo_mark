@@ -74,3 +74,30 @@ As a result, many frames will be collected in the directory `data/img`. Then you
 
 ![Image of Yolo_mark](https://habrastorage.org/files/229/f06/277/229f06277fcc49279342b7edfabbb47a.jpg)
 
+### Instruction manual
+
+#### Mouse control
+
+Button | Description | 
+--- | --- |
+Left | Draw box
+Right | Move box
+
+#### Keyboard Shortcuts
+
+Shortcut | Description | 
+--- | --- |
+<kbd>r/kbd> | Delete selected box (mouse hovered) |
+<kbd>←</kbd> | Previous image |
+<kbd>→</kbd> | Next image |
+<kbd>c</kbd> | Clear marks |
+<kbd>p/kbd> | Copy previous mark |
+<kbd>ESC</kbd> | Close application |
+<kbd>n</kbd> | One object per image |
+<kbd>0-9</kbd> | Object id |
+<kbd>m</kbd> | Show coords |
+<kbd>w</kbd> | Line width |
+<kbd>k</kbd> | Hide object name |
+<kbd>o/kbd> | Track objects |
+<kbd>h</kbd> | Help |
+

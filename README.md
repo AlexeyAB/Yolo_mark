@@ -26,7 +26,7 @@ Supported both: OpenCV 2.x and OpenCV 3.x
 
  * delete all files from directory `x64/Release/data/img`
  * put your `.jpg`-images to this directory `x64/Release/data/img`
- * change numer of classes (objects for detection) in file `x64/Release/data/obj.data`: https://github.com/AlexeyAB/Yolo_mark/blob/master/x64/Release/data/obj.data#L1
+ * change number of classes (objects for detection) in file `x64/Release/data/obj.data`: https://github.com/AlexeyAB/Yolo_mark/blob/master/x64/Release/data/obj.data#L1
  * put names of objects, one for each line in file `x64/Release/data/obj.names`: https://github.com/AlexeyAB/Yolo_mark/blob/master/x64/Release/data/obj.names
  * run file: `x64\Release\yolo_mark.cmd`
 

@@ -214,10 +214,10 @@ void callback_mouse_click(int event, int x, int y, int flags, void* user_data)
     }
     else if (event == cv::EVENT_LBUTTONUP)
     {
-        x_size = abs(x - x_start);
-        y_size = abs(y - y_start);
         x_end = max(x, 0);
         y_end = max(y, 0);
+        x_size = abs(x_end - x_start);
+        y_size = abs(y_end - y_start);
         draw_select = false;
         selected = true;
         //std::cout << "cv::EVENT_LBUTTONUP \n";

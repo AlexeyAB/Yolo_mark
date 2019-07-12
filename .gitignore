@@ -1,6 +1,23 @@
-# Build files
-/CMakeCache.txt
-/CMakeFiles/
-/Makefile
-/cmake_install.cmake
-/yolo_mark
+*.o
+*.a
+*.dSYM
+*.csv
+*.out
+*.png
+*.so
+*.exe
+*.dll
+*.lib
+build_*/
+*.weights
+
+# OS Generated #
+.DS_Store*
+ehthumbs.db
+Icon?
+Thumbs.db
+*.swp
+
+# IDE generated #
+.vs/
+.vscode/

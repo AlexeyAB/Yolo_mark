@@ -2,7 +2,7 @@
 
 GUI for marking bounding boxes of objects in images for training Yolo
 
-* To build the tool, you need a compiler, cmake and OpenCV 3+. Then run:
+* To build the tool, you need a compiler, cmake and OpenCV. Then run:
 
 ```bash
 cmake .
@@ -16,15 +16,15 @@ To use for labeling your custom images:
 
 * delete all files from directory `data/img`
 * put your `.jpg`-images to this directory `data/img`
-* change numer of classes (objects for detection) in file `data/obj.data`: https://github.com/cenit/Yolo_mark/blob/master/data/obj.data#L1
-* put names of objects, one for each line in file `data/obj.names`: https://github.com/cenit/Yolo_mark/blob/master/data/obj.names
+* change numer of classes (objects for detection) in file [`data/obj.data`](data/obj.data#L1)
+* put names of objects, one for each line in file [`data/obj.names`](data/obj.names)
 * run file: `yolo_mark.cmd`
 
 To train the net for your custom objects, you should change 2 lines in file `yolo-obj.cfg`:
 
-* [set number of classes (objects)](https://github.com/cenit/Yolo_mark/blob/master/yolo-obj.cfg#L230)
+* [set number of classes (objects)](yolo-obj.cfg#L230)
 * set `filter`-value
-  * [For Yolo-v2 `(classes + 5)*5`](https://github.com/cenit/Yolo_mark/blob/master/yolo-obj.cfg#L224)
+  * [For Yolo-v2 `(classes + 5)*5`](yolo-obj.cfg#L224)
   * For Yolo-v3 `(classes + 5)*3`
 * Download [pre-trained weights](http://pjreddie.com/media/files/darknet19_448.conv.23) for the convolutional layers
 * Put files: `yolo-obj.cfg`, `data/train.txt`, `data/obj.names`, `data/obj.data`, `darknet19_448.conv.23` and directory `data/img` near with executable `darknet`-file, and start training: `darknet detector train data/obj.data yolo-obj.cfg darknet19_448.conv.23`

@@ -1,8 +1,8 @@
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.2)
 
-set(Yolo_mark_MAJOR_VERSION 0)
-set(Yolo_mark_MINOR_VERSION 2)
-set(Yolo_mark_PATCH_VERSION 5)
+set(Yolo_mark_MAJOR_VERSION 1)
+set(Yolo_mark_MINOR_VERSION 0)
+set(Yolo_mark_PATCH_VERSION 0)
 set(Yolo_mark_VERSION ${Yolo_mark_MAJOR_VERSION}.${Yolo_mark_MINOR_VERSION}.${Yolo_mark_PATCH_VERSION})
 
 set(CMAKE_VERBOSE_MAKEFILE "FALSE" CACHE BOOL "Create verbose makefile")

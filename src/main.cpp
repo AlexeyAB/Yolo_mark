@@ -305,7 +305,7 @@ int main(int argc, char* argv[])
     //glob(images_path, filenames_in_folder); // void glob(String pattern, std::vector<String>& result, bool recursive = false);
     cv::String images_path_cv = images_path;
     std::vector<cv::String> filenames_in_folder_cv;
-    glob(images_path_cv, filenames_in_folder_cv); // void glob(String pattern, std::vector<String>& result, bool recursive = false);
+    cv::glob(images_path_cv, filenames_in_folder_cv); // void glob(String pattern, std::vector<String>& result, bool recursive = false);
     for (auto& i : filenames_in_folder_cv)
       filenames_in_folder.push_back(i);
 

@@ -21,3 +21,6 @@ Thumbs.db
 # IDE generated #
 .vs/
 .vscode/
+
+#Build artifacts
+yolo_mark

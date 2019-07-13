@@ -2,13 +2,15 @@
 
 GUI for marking bounding boxes of objects in images for training Yolo
 
-* To build the tool, you need a compiler, cmake and OpenCV. Then run:
+* To build the tool, you need a compiler, cmake and OpenCV 3+. Then run:
 
 ```bash
 cmake .
 make
 ./run.sh (or run.cmd on Windows)
 ```
+
+There are also build scripts (`build.sh` and `build.ps1`) to ease building on *nix systems and on windows.
 
 To use for labeling your custom images:
 
@@ -36,7 +38,7 @@ To get frames from video files (save each N frame, in example N=10), you can use
 * on Windows: `yolo_mark.exe data/img cap_video test.mp4 10`
 * on Linux: `./yolo_mark x64/Release/data/img cap_video test.mp4 10`
 
-Directory `data/img` should be created before this. Also on Windows, the file `opencv_ffmpeg340_64.dll` from `opencv\build\bin` should be placed near with `yolo_mark.exe`.
+Directory `data/img` should be created before this.
 
 As a result, many frames will be collected in the directory `data/img`. Then you can label them manually using such command
 

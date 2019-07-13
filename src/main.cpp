@@ -15,15 +15,9 @@
 #include <opencv2/core/version.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
-//#include <opencv2/optflow.hpp>
 #include <opencv2/video/tracking.hpp>
-
-#ifndef CV_VERSION_EPOCH
 #include "opencv2/videoio/videoio.hpp"
 #define OPENCV_VERSION CVAUX_STR(CV_VERSION_MAJOR)"" CVAUX_STR(CV_VERSION_MINOR)"" CVAUX_STR(CV_VERSION_REVISION) OCV_D
-#else
-#define OPENCV_VERSION CVAUX_STR(CV_VERSION_EPOCH)"" CVAUX_STR(CV_VERSION_MAJOR)"" CVAUX_STR(CV_VERSION_MINOR) OCV_D
-#endif
 
 // label coordinates
 struct coord_t {
@@ -106,8 +100,7 @@ class Tracker_optflow {
       return cur_bbox_vec;
     }
 
-    ////sync_PyrLKOpticalFlow_gpu.sparse(src_grey_gpu, dst_grey_gpu, prev_pts_flow_gpu, cur_pts_flow_gpu, status_gpu, &err_gpu);    // OpenCV 2.4.x
-    sync_PyrLKOpticalFlow->calc(src_grey, dst_grey, prev_pts_flow, cur_pts_flow, status, err); // OpenCV 3.x
+    sync_PyrLKOpticalFlow->calc(src_grey, dst_grey, prev_pts_flow, cur_pts_flow, status, err);
 
     dst_grey.copyTo(src_grey);
 
@@ -254,11 +247,7 @@ int main(int argc, char* argv[])
     if (argc >= 4 && (train_filename == "cap_video" || train_filename == "cap_video_backward")) {
       const std::string videofile = synset_filename;
       cv::VideoCapture cap(videofile);
-#ifndef CV_VERSION_EPOCH // OpenCV 3.x
       const int fps = cap.get(cv::CAP_PROP_FPS);
-#else // OpenCV 2.x
-      const int fps = cap.get(CV_CAP_PROP_FPS);
-#endif
       int frame_counter = 0, image_counter = 0;
       int backward = (train_filename == "cap_video_backward") ? 1 : 0;
       if (backward)
@@ -277,13 +266,9 @@ int main(int argc, char* argv[])
 
       for (cv::Mat frame; cap >> frame, cap.isOpened() && !frame.empty();) {
         cv::imshow("video cap to frames", frame);
-#ifndef CV_VERSION_EPOCH
-        int pressed_key = cv::waitKeyEx(20); // OpenCV 3.x
-#else
-        int pressed_key = cv::waitKey(20); // OpenCV 2.x
-#endif
+        int pressed_key = cv::waitKeyEx(20);
         if (pressed_key == 27 || pressed_key == 1048603)
-          break; // ESC - exit (OpenCV 2.x / 3.x)
+          break; // ESC - exit
         if (frame_counter++ >= save_each_frames) { // save frame for each 3 second
           frame_counter = 0;
           std::stringstream image_counter_ss;
@@ -592,13 +577,8 @@ int main(int argc, char* argv[])
 
         marks_changed = false;
 
-#ifndef CV_VERSION_EPOCH // OpenCV 3.x
         rectangle(frame, prev_img_rect, cv::Scalar(100, 100, 100), cv::FILLED);
         rectangle(frame, next_img_rect, cv::Scalar(100, 100, 100), cv::FILLED);
-#else // OpenCV 2.x
-        rectangle(frame, prev_img_rect, cv::Scalar(100, 100, 100), CV_FILLED);
-        rectangle(frame, next_img_rect, cv::Scalar(100, 100, 100), CV_FILLED);
-#endif
       }
 
       trackbar_value = std::min(std::max(0, trackbar_value), (int)jpg_filenames_path.size() - 1);
@@ -859,12 +839,7 @@ int main(int argc, char* argv[])
 
       imshow(window_name, frame);
 
-#ifndef CV_VERSION_EPOCH
-      int pressed_key = cv::waitKeyEx(20); // OpenCV 3.x
-#else
-      int pressed_key = cv::waitKey(20); // OpenCV 2.x
-#endif
-
+      int pressed_key = cv::waitKeyEx(20);
       if (pressed_key >= 0)
         for (int i = 0; i < 5; ++i)
           cv::waitKey(1);

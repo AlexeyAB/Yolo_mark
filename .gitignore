@@ -24,3 +24,6 @@ Thumbs.db
 
 #Build artifacts
 yolo_mark
+
+#Examples
+data/*

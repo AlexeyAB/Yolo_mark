@@ -7,10 +7,11 @@
         
     * (right click on project) -> properties -> Linker -> General -> Additional Library Directories: `C:\opencv_3.0\opencv\build\x64\vc14\lib;`
 
-* To compile on **Linux** type in console 3 commands:
+* To compile and run on **Linux** type 4 commands in to the console:
     ```
     cmake .
     make
+    chmod +x linux_mark.sh
     ./linux_mark.sh
     ```
 

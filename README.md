@@ -26,7 +26,7 @@ Supported both: OpenCV 2.x and OpenCV 3.x
 
  * delete all files from directory `x64/Release/data/img`
  * put your `.jpg`-images to this directory `x64/Release/data/img`
- * change numer of classes (objects for detection) in file `x64/Release/data/obj.data`: https://github.com/AlexeyAB/Yolo_mark/blob/master/x64/Release/data/obj.data#L1
+ * change number of classes (objects for detection) in file `x64/Release/data/obj.data`: https://github.com/AlexeyAB/Yolo_mark/blob/master/x64/Release/data/obj.data#L1
  * put names of objects, one for each line in file `x64/Release/data/obj.names`: https://github.com/AlexeyAB/Yolo_mark/blob/master/x64/Release/data/obj.names
  * run file: `x64\Release\yolo_mark.cmd`
 
@@ -62,7 +62,7 @@ As a result, many frames will be collected in the directory `data/img`. Then you
 #### Here are:
 
 * /x64/Release/
-  * `yolo_mark.cmd` - example hot to use yolo mark: `yolo_mark.exe data/img data/train.txt data/obj.names`
+  * `yolo_mark.cmd` - example how to use yolo mark: `yolo_mark.exe data/img data/train.txt data/obj.names`
   * `train_obj.cmd` - example how to train yolo for your custom objects (put this file near with darknet.exe): `darknet.exe detector train data/obj.data yolo-obj.cfg darknet19_448.conv.23`
   * `yolo-obj.cfg` - example of yoloV3-neural-network for 2 object
 * /x64/Release/data/

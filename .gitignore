@@ -27,3 +27,6 @@ yolo_mark
 
 #Examples
 data/*
+data
+examples/
+

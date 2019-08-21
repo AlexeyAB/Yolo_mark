@@ -42,11 +42,11 @@ install:
   - if [%COMPILER%]==[vs]     cd %VCPKG_ROOT%
   - if [%COMPILER%]==[vs]     git pull
   - if [%COMPILER%]==[vs]     .\bootstrap-vcpkg.bat
-  - if [%COMPILER%]==[vs]     .\vcpkg.exe install opencv --recurse
+  - if [%COMPILER%]==[vs]     echo set(VCPKG_BUILD_TYPE release) >> triplets\%VCPKG_DEFAULT_TRIPLET%.cmake
+  - if [%COMPILER%]==[vs]     .\vcpkg.exe install opencv[contrib] --recurse
   - cd %WORKSPACE%\Yolo_mark\
   - mkdir build_debug && cd build_debug
   - if [%COMPILER%]==[cygwin] %CYGSH% 'cmake .. -G "Unix Makefiles" -DCMAKE_BUILD_TYPE="Debug"'
-  - if [%COMPILER%]==[vs] if [%configuration%]==[Debug] cmake -G "Visual Studio 15 2017" -T "host=x64" -A "x64" "-DCMAKE_TOOLCHAIN_FILE=%VCPKG_ROOT%\scripts\buildsystems\vcpkg.cmake" "-DVCPKG_TARGET_TRIPLET=%VCPKG_DEFAULT_TRIPLET%" -DCMAKE_BUILD_TYPE="Debug" ..
   - cd ..
   - mkdir build_release && cd build_release
   - if [%COMPILER%]==[cygwin] %CYGSH% 'cmake .. -G "Unix Makefiles" -DCMAKE_BUILD_TYPE="Release"'
@@ -56,7 +56,6 @@ install:
 build_script:
   - if [%COMPILER%]==[cygwin]                             cd build_debug   && %CYGSH% 'cmake --build . --target install -- -j8'              && cd ..
   - if [%COMPILER%]==[cygwin]                             cd build_release && %CYGSH% 'cmake --build . --target install -- -j8'              && cd ..
-  - if [%COMPILER%]==[vs] if [%configuration%]==[Debug]   cd build_debug   && cmake --build . --config Debug --parallel 8 --target install   && cd ..
   - if [%COMPILER%]==[vs] if [%configuration%]==[Release] cd build_release && cmake --build . --config Release --parallel 8 --target install && cd ..
 
 artifacts:

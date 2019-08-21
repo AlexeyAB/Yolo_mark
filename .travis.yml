@@ -32,22 +32,14 @@ matrix:
         - VCPKG_DEFINES="-DCMAKE_TOOLCHAIN_FILE=$HOME/vcpkg/scripts/buildsystems/vcpkg.cmake"
 
     - os: linux
-      dist: xenial
+      dist: bionic
       compiler: gcc
-      name: ubuntu 16.04 - gcc@8.0 - vcpkg
-      addons:
-        apt:
-          update: true
-          sources:
-            - ubuntu-toolchain-r-test
-            - sourceline: 'ppa:xqms/opencv-nonfree'
-          packages:
-            - g++-8
+      name: ubuntu 18.04 - gcc - vcpkg
       env:
         - additional_defines=""
         - USE_VCPKG=true
         - VCPKG_DEFINES="-DCMAKE_TOOLCHAIN_FILE=$HOME/vcpkg/scripts/buildsystems/vcpkg.cmake"
-        - MATRIX_EVAL="export CC=gcc-8 && export CXX=g++-8"
+        - MATRIX_EVAL=""
 
 before_install:
   - travis_retry eval "${MATRIX_EVAL}"
@@ -62,20 +54,17 @@ install:
   - cd vcpkg
   - git pull
   - if [ "${USE_VCPKG}" = true ] ; then ./bootstrap-vcpkg.sh ; fi
-  - if [ "${USE_VCPKG}" = true ] ; then travis_wait 45 ./vcpkg install opencv --recurse ; fi
+  - if [ "${USE_VCPKG}" = true ] ; then echo "set(VCPKG_BUILD_TYPE release)" >> triplets/x64-osx.cmake ; fi
+  - if [ "${USE_VCPKG}" = true ] ; then echo "set(VCPKG_BUILD_TYPE release)" >> triplets/x64-linux.cmake ; fi
+  - if [ "${USE_VCPKG}" = true ] ; then travis_wait 45 ./vcpkg install opencv[contrib] --recurse ; fi
   - popd
 
 before_script:
   - echo ${additional_defines}
-  - mkdir build_debug
-  - cd build_debug
-  - cmake .. -DCMAKE_BUILD_TYPE="Debug" ${VCPKG_DEFINES} ${additional_defines}
-  - cd ..
   - mkdir build_release
   - cd build_release
   - cmake .. -DCMAKE_BUILD_TYPE="Release" ${VCPKG_DEFINES} ${additional_defines}
   - cd ..
 
 script:
-  - cd build_debug   && cmake --build . --target install -- -j8 && cd ..
   - cd build_release && cmake --build . --target install -- -j8 && cd ..

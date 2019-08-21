@@ -62,7 +62,7 @@ install:
   - cd vcpkg
   - git pull
   - if [ "${USE_VCPKG}" = true ] ; then ./bootstrap-vcpkg.sh ; fi
-  - if [ "${USE_VCPKG}" = true ] ; then travis_wait 45 ./vcpkg install opencv ; fi
+  - if [ "${USE_VCPKG}" = true ] ; then travis_wait 45 ./vcpkg install opencv --recurse ; fi
   - popd
 
 before_script:

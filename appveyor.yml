@@ -42,7 +42,7 @@ install:
   - if [%COMPILER%]==[vs]     cd %VCPKG_ROOT%
   - if [%COMPILER%]==[vs]     git pull
   - if [%COMPILER%]==[vs]     .\bootstrap-vcpkg.bat
-  - if [%COMPILER%]==[vs]     vcpkg install opencv
+  - if [%COMPILER%]==[vs]     .\vcpkg.exe install opencv --recurse
   - cd %WORKSPACE%\Yolo_mark\
   - mkdir build_debug && cd build_debug
   - if [%COMPILER%]==[cygwin] %CYGSH% 'cmake .. -G "Unix Makefiles" -DCMAKE_BUILD_TYPE="Debug"'

@@ -14,11 +14,6 @@ environment:
       configuration: Release
       VCPKG_ROOT: C:\Tools\vcpkg
       VCPKG_DEFAULT_TRIPLET: x64-windows
-    - platform: Win64
-      COMPILER: vs
-      configuration: Debug
-      VCPKG_ROOT: C:\Tools\vcpkg
-      VCPKG_DEFAULT_TRIPLET: x64-windows
 
 install:
   - if [%COMPILER%]==[vs] cinst cmake ninja

@@ -1,0 +1,70 @@
+language: cpp
+cache:
+  timeout: 1000
+  directories:
+    - $HOME/vcpkg
+
+matrix:
+  include:
+
+    - os: osx
+      compiler: clang
+      name: macOS - native clang - opencv@3
+      env:
+        - OpenCV_DIR="/usr/local/opt/opencv@3/"
+        - additional_defines="-DOpenCV_DIR=${OpenCV_DIR}"
+        - MATRIX_EVAL="brew install opencv@3"
+
+    - os: osx
+      compiler: clang
+      name: macOS - native clang - opencv(latest)
+      env:
+        - additional_defines=""
+        - MATRIX_EVAL="brew install opencv"
+
+    - os: osx
+      name: macOS - vcpkg
+      osx_image: xcode10.1
+      env:
+        - additional_defines=""
+        - MATRIX_EVAL="brew install gcc && unset CC && unset CXX"
+        - USE_VCPKG=true
+        - VCPKG_DEFINES="-DCMAKE_TOOLCHAIN_FILE=$HOME/vcpkg/scripts/buildsystems/vcpkg.cmake"
+
+    - os: linux
+      dist: bionic
+      compiler: gcc
+      name: ubuntu 18.04 - gcc - vcpkg
+      env:
+        - additional_defines=""
+        - USE_VCPKG=true
+        - VCPKG_DEFINES="-DCMAKE_TOOLCHAIN_FILE=$HOME/vcpkg/scripts/buildsystems/vcpkg.cmake"
+        - MATRIX_EVAL=""
+
+before_install:
+  - travis_retry eval "${MATRIX_EVAL}"
+
+install:
+  # CMake upgrade on Linux
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]] ; then wget --no-check-certificate https://github.com/Kitware/CMake/releases/download/v3.13.4/cmake-3.13.4-Linux-x86_64.tar.gz ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]] ; then tar -xzf cmake-3.13.4-Linux-x86_64.tar.gz ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]] ; then export PATH=$PWD/cmake-3.13.4-Linux-x86_64/bin:$PATH ; fi
+  - pushd $HOME
+  - if [ -d "$HOME/vcpkg/.git" ] ; then echo vcpkg cached ; else rm -rf vcpkg ; git clone https://github.com/Microsoft/vcpkg ; fi
+  - cd vcpkg
+  - git pull
+  - if [ "${USE_VCPKG}" = true ] ; then ./bootstrap-vcpkg.sh ; fi
+  - if [ "${USE_VCPKG}" = true ] ; then echo "set(VCPKG_BUILD_TYPE release)" >> triplets/x64-osx.cmake ; fi
+  - if [ "${USE_VCPKG}" = true ] ; then echo "set(VCPKG_BUILD_TYPE release)" >> triplets/x64-linux.cmake ; fi
+  - if [ "${USE_VCPKG}" = true ] ; then travis_wait 45 ./vcpkg install opencv[contrib] --recurse ; fi
+  - popd
+
+before_script:
+  - echo ${additional_defines}
+  - mkdir build_release
+  - cd build_release
+  - cmake .. -DCMAKE_BUILD_TYPE="Release" ${VCPKG_DEFINES} ${additional_defines}
+  - cd ..
+
+script:
+  - cd build_release && cmake --build . --target install -- -j8 && cd ..

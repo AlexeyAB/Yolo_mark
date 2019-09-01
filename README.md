@@ -1,5 +1,5 @@
 # Prerequisites
-You will need to download and install the following programs in order to use Yolo mark, if you do not already have them:
+You will need to download the following programs in order to use Yolo mark, if you do not already have them:
 
 #### OpenCV (Download as a ZIP)
 
@@ -13,6 +13,7 @@ https://cmake.org/download/
 
 https://visualstudio.microsoft.com/vs/older-downloads/
 
+### Installation
 
 1. Extract the opencv-master.zip to a directory like `C:/OpenCV/opencv-master`
 

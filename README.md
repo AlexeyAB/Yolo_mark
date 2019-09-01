@@ -1,5 +1,5 @@
 # Prerequisites
-You will need to download and install the following programs if you do not already have them:
+You will need to download and install the following programs in order to use Yolo mark, if you do not already have them:
 
 #### OpenCV (Download as a ZIP)
 

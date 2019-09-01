@@ -1,5 +1,5 @@
 ## Prerequisites 
-##(if you already have OpenCV for Windows, and Visual Studio, you can jump to [Yolo_mark](#main) to begin!)
+## if you already have OpenCV for Windows, and Visual Studio, you can jump to [Yolo_mark](#main) to begin!)
 
 You will need to download the following programs in order to use Yolo mark, if you do not already have them:
 

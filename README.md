@@ -39,7 +39,7 @@ https://visualstudio.microsoft.com/vs/older-downloads/
    - After, set the Local Windows Debugger to **Release** and keep **x64**. Right-click the **ALL_BUILD** C++ project again and select **BUILD**.
    - Keep the Local Windows Debugger on **Release** and **x64**. Right-click the **INSTALL** C++ project and select **BUILD**.
    - Change the Local Windows Debugger to **Debug** and **x64**. Right-click the **INSTALL** C++ project and select **BUILD**.
-     - This will generate all the library, include, x64, and bin/lib files all in one folder.
+     - This will generate all the library, include, x64, and bin/lib directories all in one space.
 
 
 

@@ -39,7 +39,7 @@ https://visualstudio.microsoft.com/vs/older-downloads/
    - Visual Studio will open. You will need to find **CMakeTargets** folder in the Solution Explorer to the right. Make sure the Local Windows Debugger is set to **Debug** and **x64** and select the **ALL_BUILD** C++ project, right-click and select **BUILD**. 
      - If you happen to get an error:   
      `LNK1104: cannot open file 'python37_d.lib`
-     - Then you can build the debug version of that library yourself if you do not have the file anywhere on your computer. It's very simple, please refer to this Stack Overflow post where J.T. Davies explains how to do it:
+     - Then you can build the debug version of that library yourself if you do not have the file anywhere on your computer. It's very simple, please refer to this Stack Overflow post where **J.T. Davies** explains how to do it:
      https://stackoverflow.com/questions/17028576/using-python-3-3-in-c-python33-d-lib-not-found
    - After, set the Local Windows Debugger to **Release** and keep it set to **x64**. Select the **ALL_BUILD** C++ project again, right-click and select **BUILD**.
    - Keep the Local Windows Debugger on **Release** and set to **x64**. But this time, select the **INSTALL** C++ project, right-click and select **BUILD**.
@@ -93,7 +93,7 @@ https://visualstudio.microsoft.com/vs/older-downloads/
      - `opencv_core411d.lib`
    - Note: If your other projects are requiring other library files, you may need to add them to the **Linker** -> **Input** -> **Additional Dependencies** field manually. These files will have a "d" suffix for debug and are found in `C:\OpenCV4\opencv4\install\x64\vc15\lib`
 
-Press CTRL + F5 or the green play button next to Windows Local Debugger and a blank image should be created and be shown on the screen signifing the installation went successfully!
+Press CTRL + F5 or the green play button next to Windows Local Debugger and a blank image should be created and be shown on the screen signifing the installation went successfully! :bowtie:
 ![Installation Complete!](https://github.com/alpizano/Yolo_mark/blob/master/testopencv.png)
 
 # Yolo_mark<a name="main"></a>

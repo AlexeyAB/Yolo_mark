@@ -56,8 +56,9 @@ https://visualstudio.microsoft.com/vs/older-downloads/
    - Creating an Empty C++ Project (Name it anything you want)
    - Right-click on the Source Files folder in the Solution Explorer to the right and add a New Item -> C++ File (.cpp) (Any name is fine)
    - Copy and paste the code below into the Source.cpp you just added:
-     - `#include "opencv2/core.hpp"
-        #include "opencv2/highgui.hpp"
+     - ```
+     #include "opencv2/core.hpp"
+     #include "opencv2/highgui.hpp"
 
         using namespace std;
         using namespace cv;
@@ -70,7 +71,8 @@ https://visualstudio.microsoft.com/vs/older-downloads/
 	     imshow("x", A);
 	     waitKey(0);
 	     return 0;
-        }`
+        } 
+	```
    
    - Click on **View** -> **Other Windows** -> **Property Manager**.
    - A left sidebar will appear with Debug | Win32, Debug | x64, Release | Win32, and Release | x64 options.

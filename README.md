@@ -1,4 +1,4 @@
-## Prerequisites (if you already have OpenCV for Windows and Visual Studio installed, you can jump to [Yolo_mark](#main) to begin!)
+## Prerequisites (if you already have OpenCV for Windows and Visual Studio installed, you can jump to [Yolo_mark](#main) to begin)
 
 You will need to download the following programs in order to use Yolo mark, if you do not already have them:
 
@@ -30,33 +30,37 @@ https://visualstudio.microsoft.com/vs/older-downloads/
    - "Optional toolset to use" can  be left blank.
    - "Use default native compilers" can be checked.
 
-6. After configuration is complete you will see a message "Configuring done" in the main GUI window. Find the field name "BUILD_opencv_world" in the main window and tick the box to include it.
+6. After configuration is complete you will see a message `Configuring done` in the main GUI window. Find the field name **BUILD_opencv_world** in the main window and tick the box [x] to include it.
 
 7. Click **Generate**
-   - You will see a message "Generating done" in the main GUI window when it is complete.
+   - You will see a message `Generating done` in the main GUI window when it is complete.
    
 8. Click **Open Project**
-   - Visual Studio will open. You will need to find **CMakeTargets** folder in the Solution Explorer to the right. Make sure the Local Windows Debugger is set to **Debug** and **x64** and select the **ALL_BUILD** C++ project, right-click and select **BUILD**.  
+   - Visual Studio will open. You will need to find **CMakeTargets** folder in the Solution Explorer to the right. Make sure the Local Windows Debugger is set to **Debug** and **x64** and select the **ALL_BUILD** C++ project, right-click and select **BUILD**. 
+     - If you happen to get an error:
+     ` LNK1104: cannot open file 'python37_d.lib'
+     - Then you can build the debug version of that library yourself if you do not have the file anywhere on your computer. It's very simple, please refer to this Stack Overflow post where J.T. Davies explains how to do it:
+     https://stackoverflow.com/questions/17028576/using-python-3-3-in-c-python33-d-lib-not-found
    - After, set the Local Windows Debugger to **Release** and keep it set to **x64**. Select the **ALL_BUILD** C++ project again, right-click and select **BUILD**.
    - Keep the Local Windows Debugger on **Release** and set to **x64**. But this time, select the **INSTALL** C++ project, right-click and select **BUILD**.
    - Change the Local Windows Debugger to **Debug** and set to **x64**. Select the **INSTALL** C++ project, right-click and select **BUILD**.
      - This will generate all the library, includes, x64, and bin/lib directories all in one space.
    - You can close out of Visual Studio.
      
-9. In Windows search, type "env" to access the Environment Variables.
+9. In Windows search, type `env` to access the Environment Variables.
    - In System Properties, under the Advanced tab, click **Environment Variables**
    - Below the **System variables** list, click **New** and enter these values for the two fields:
      - Variable name: `OPENCV_DIR`.
      - Variable value: `C:\OpenCV4\opencv4\install\x64\vc15`
    - Click OK
-   - Still in the System variables window, select **Path** and click **Edit**. Add these two directories to the path:
+   - Still in the **System variables** window, select **Path** and click **Edit**. Add these two directories to the path:
      - %OPENCV_DIR%\bin
      - %OPENCV_DIR%\lib
    - Click OK and you can exit out of the System Properties now.
      
 9. Test That Install Works
-   - Creating an Empty C++ Project (Name it anything you want)
-   - Right-click on the Source Files folder in the Solution Explorer to the right and add a New Item -> C++ File (.cpp) (Any name is fine)
+   - Creating an empty C++ project (Name it anything you want)
+   - Right-click on the **Source Files** folder in the **Solution Explorer** to the right and add a **New Item** -> **C++ File (.cpp)** (sny name is fine)
    - Copy and paste the code below into the Source.cpp you just added:
      ```
      #include "opencv2/core.hpp"
@@ -76,12 +80,13 @@ https://visualstudio.microsoft.com/vs/older-downloads/
         }	
 	
    - Click on **View** -> **Other Windows** -> **Property Manager**.
-   - A left sidebar will appear with Debug | Win32, Debug | x64, Release | Win32, and Release | x64 options.
+   - A left sidebar will appear with **Debug | Win32**, **Debug | x64**, **Release | Win32**, and **Release | x64** options.
    - **Make sure the Local Windows Debugger is set to Debug and x64**
    - Right-click Debug | x64 in Property Manager window to the left and select **Properties**.
+     - *Alternatively*, you can find these same C/C++, Linker options by right-clicking your C++ project in the Solution Explorer and selecting **Properties**.
    - Under **C/C++** -> **General** -> **Additional Include Directories**, add:
      - `C:\OpenCV4\opencv4\install\include`or whatever your install\include location is
-   - Under Linker -> Additional Library Dependences, add:
+   - Under **Linker** -> **Additional Library Dependences**, add:
      - `C:\OpenCV4\opencv4\install\x64\vc15\lib`
    - Under **Linker** -> **Input** -> **Additional Dependencies**, add:
      - `opencv_highgui411d.lib`

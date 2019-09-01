@@ -14,17 +14,16 @@ https://cmake.org/download/
 https://visualstudio.microsoft.com/vs/older-downloads/
 
 
-1. Extract the opencv-master.zip to a directory like C:/OpenCV/opencv-master
+1. Extract the opencv-master.zip to a directory like `C:/OpenCV/opencv-master`
 
 2. Open the CMake GUI
 
-3. For the "Where is the source code:" field, click **Browse Source...** and add the directory of the OpenCV folder from above. In this example it is *C:/OpenCV4/opencv-master*.
+3. For the "Where is the source code:" field, click **Browse Source...** and add the directory of the OpenCV folder from above. In this example it is `C:/OpenCV4/opencv-master`.
 
-4. For the "Where to build the binaries:" field, create a folder inside the OpenCV folder called "opencv" and click **Browse Build...** to add it. In this example, it is *C:/OpenCV4/opencv4*
+4. For the "Where to build the binaries:" field, create a folder inside the OpenCV folder called "opencv" and click **Browse Build...** to add it. In this example, it is `C:/OpenCV4/opencv4`
 
 5. Click **Configure**
-
-- For "Specify the generator for this project", make sure to select your version of Visual Studio. In this example, we are using **Visual Studio 15 2017**
+   - For "Specify the generator for this project", make sure to select your version of Visual Studio. In this example, we are using **Visual Studio 15 2017**
 
 Under "Optional platform for generator", select **x64**. If you leave blank, which defaults to Win32, you will only be able to build Debug/Release in Visual Studio in Win32 and may get target machine build errors.
 

@@ -1,5 +1,6 @@
 # Prerequisites
 You will need to download and install the following programs if you do not already have them:
+
 OpenCV (Download as a ZIP)
 https://github.com/opencv/opencv
 

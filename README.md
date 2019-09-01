@@ -87,8 +87,10 @@ https://visualstudio.microsoft.com/vs/older-downloads/
      - `opencv_core411d.lib`
    - Note: If your other projects are requiring other library files, you may need to add them to the **Linker** -> **Input** -> **Additional Dependencies** field manually. These files will have a "d" suffix for debug and are found in `C:\OpenCV4\opencv4\install\x64\vc15\lib`
 
-#### Press CTRL + F5 or the green play button next to Windows Local Debugger and a blank image should be created and be shown on the screen signifing the installation went successfully
+Press CTRL + F5 or the green play button next to Windows Local Debugger and a blank image should be created and be shown on the screen signifing the installation went successfully!
 ![Installation Complete!](https://github.com/alpizano/Yolo_mark/blob/master/testopencv.png)
+
+[create an anchor](# Prerequisites)
 
 
 # Yolo_mark

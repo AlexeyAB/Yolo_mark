@@ -25,7 +25,7 @@ https://visualstudio.microsoft.com/vs/older-downloads/
 
 5. Click **Configure**
    - For "Specify the generator for this project", make sure to select your version of Visual Studio. In this example, we are using **Visual Studio 15 2017**
-   - Under "Optional platform for generator", select **x64**. If you leave it blank, it defaults to Win32 and you will only be able to build Debug/Release in Visual Studio in Win32 and may get 'LNK1112 module machine type `x64' conflicts with target machine type 'x86` build error.
+   - Under "Optional platform for generator", select **x64**. If you leave it blank, it defaults to Win32 and you will only be able to build Debug/Release in Visual Studio in Win32 and may get `LNK1112 module machine type 'x64' conflicts with target machine type 'x86` build error.
    - "Optional toolset to use" can  be left blank.
    - "Use default native compilers" can be checked.
 

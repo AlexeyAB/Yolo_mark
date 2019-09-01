@@ -40,6 +40,7 @@ https://visualstudio.microsoft.com/vs/older-downloads/
    - Keep the Local Windows Debugger on **Release** and set to **x64**. But this time, select the **INSTALL** C++ project, right-click and select **BUILD**.
    - Change the Local Windows Debugger to **Debug** and set to **x64**. Select the **INSTALL** C++ project, right-click and select **BUILD**.
      - This will generate all the library, includes, x64, and bin/lib directories all in one space.
+   - You can close out of Visual Studio.
      
 9. In Windows search, type "env" to access the Environment Variables.
    - In System Properties, under the Advanced tab, click **Environment Variables**
@@ -71,13 +72,23 @@ https://visualstudio.microsoft.com/vs/older-downloads/
 	     imshow("x", A);
 	     waitKey(0);
 	     return 0;
-        }
-	```
+        }	
 	
    - Click on **View** -> **Other Windows** -> **Property Manager**.
    - A left sidebar will appear with Debug | Win32, Debug | x64, Release | Win32, and Release | x64 options.
-   - 
+   - **Make sure the Local Windows Debugger is set to Debug and x64**
+   - Right-click Debug | x64 in Property Manager window to the left and select **Properties**.
+   - Under **C/C++** -> **General** -> **Additional Include Directories**, add:
+     - `C:\OpenCV4\opencv4\install\include`or whatever your install\include location is
+   - Under Linker -> Additional Library Dependences, add:
+     - `C:\OpenCV4\opencv4\install\x64\vc15\lib`
+   - Under **Linker** -> **Input** -> **Additional Dependencies**, add:
+     - `opencv_highgui411d.lib`
+     - `opencv_core411d.lib`
+   - Note: If your other projects are requiring other library files, you may need to add them to the **Linker** -> **Input** -> **Additional Dependencies** field manually. These files will have a "d" suffix for debug and are found in `C:\OpenCV4\opencv4\install\x64\vc15\lib`
 
+#### Press CTRL + F5 or the green play button next to Windows Local Debugger and a blank image should be created and be shown on the screen signifing the installation went successfully
+![Installation Complete!](https://raw.githubusercontent.com/username/projectname/branch/path/to/img.png)
 
 
 # Yolo_mark

@@ -24,8 +24,7 @@ https://visualstudio.microsoft.com/vs/older-downloads/
 
 5. Click **Configure**
    - For "Specify the generator for this project", make sure to select your version of Visual Studio. In this example, we are using **Visual Studio 15 2017**
-
-Under "Optional platform for generator", select **x64**. If you leave blank, which defaults to Win32, you will only be able to build Debug/Release in Visual Studio in Win32 and may get target machine build errors.
+   - Under "Optional platform for generator", select **x64**. If you leave blank, which defaults to Win32, you will only be able to build Debug/Release in Visual Studio in Win32 and may get target machine build errors.
 
 "Optional toolset to use" can  be left blank.
 

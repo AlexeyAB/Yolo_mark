@@ -37,6 +37,9 @@ https://visualstudio.microsoft.com/vs/older-downloads/
 8. Click **Open Project**
    - Visual Studio will open. You will see to find **CMakeTargets** in the Solution Explorer. Make sure the Local Windows Debugger is set to **Debug** and **x64** and right-click the **ALL_BUILD** C++ project and select **BUILD**.  
    - After, set the Local Windows Debugger to **Release** and keep **x64**. Right-click the **ALL_BUILD** C++ project again and select **BUILD**.
+   - Keep the Local Windows Debugger on **Release** and **x64**. Right-click the **INSTALL** C++ project and select **BUILD**.
+   - Change the Local Windows Debugger to **Debug** and **x64**. Right-click the **INSTALL** C++ project and select **BUILD**.
+     - This will generate all the library, include, x64, and bin/lib files all in one folder.
 
 
 

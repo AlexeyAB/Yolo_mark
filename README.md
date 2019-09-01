@@ -71,7 +71,7 @@ https://visualstudio.microsoft.com/vs/older-downloads/
 	     imshow("x", A);
 	     waitKey(0);
 	     return 0;
-        } ```
+        }
  
    - Click on **View** -> **Other Windows** -> **Property Manager**.
    - A left sidebar will appear with Debug | Win32, Debug | x64, Release | Win32, and Release | x64 options.

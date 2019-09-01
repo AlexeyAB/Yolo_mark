@@ -37,9 +37,8 @@ https://visualstudio.microsoft.com/vs/older-downloads/
    
 8. Click **Open Project**
    - Visual Studio will open. You will need to find **CMakeTargets** folder in the Solution Explorer to the right. Make sure the Local Windows Debugger is set to **Debug** and **x64** and select the **ALL_BUILD** C++ project, right-click and select **BUILD**. 
-     - If you happen to get an error:
-     
-     `LNK1104: cannot open file 'python37_d.lib'
+     - If you happen to get an error:   
+     `LNK1104: cannot open file 'python37_d.lib`
      - Then you can build the debug version of that library yourself if you do not have the file anywhere on your computer. It's very simple, please refer to this Stack Overflow post where J.T. Davies explains how to do it:
      https://stackoverflow.com/questions/17028576/using-python-3-3-in-c-python33-d-lib-not-found
    - After, set the Local Windows Debugger to **Release** and keep it set to **x64**. Select the **ALL_BUILD** C++ project again, right-click and select **BUILD**.

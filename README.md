@@ -5,7 +5,7 @@ You will need to download and install the following programs if you do not alrea
 
 https://github.com/opencv/opencv
 
-## CMake
+### CMake
 
 https://cmake.org/download/
 

@@ -13,7 +13,7 @@ https://cmake.org/download/
 
 https://visualstudio.microsoft.com/vs/older-downloads/
 
-### Installation
+### Installation (For Windows 10 64-bit)
 
 1. Extract the opencv-master.zip to a directory like `C:/OpenCV/opencv-master`
 
@@ -29,7 +29,14 @@ https://visualstudio.microsoft.com/vs/older-downloads/
    - "Optional toolset to use" can  be left blank.
    - "Use default native compilers" can be checked.
 
-6. After configuration is complete, tick the box in the main window for "BUILD_opencv_world".
+6. After configuration is complete you will see a message "Configuring done" in the main GUI window. Find the field name "BUILD_opencv_world" in the main window and tick the box to include it.
+
+7. Click **Generate**
+   - You will see a message "Generating done" in the main GUI window when it is complete.
+   
+8. Click **Open Project**
+   - Visual Studio will open. You will see to find **CMakeTargets** in the Solution Explorer. Make sure the Local Windows Debugger is set to **Debug** and **x64** and right-click the **ALL_BUILD** C++ project and select **BUILD**.  
+   - After, set the Local Windows Debugger to **Release** and keep **x64**. Right-click the **ALL_BUILD** C++ project again and select **BUILD**.
 
 
 

@@ -1,3 +1,24 @@
+# Prerequisites
+You will need to download and install the following programs if you do not already have them:
+OpenCV (Download as a ZIP)
+https://github.com/opencv/opencv
+
+CMake 
+https://cmake.org/download/
+
+Microsoft Visual Studio (2017 garaunteed to work)
+https://visualstudio.microsoft.com/vs/older-downloads/
+
+1. Extract the opencv-master.zip to a directory like C:/OpenCV/opencv-master
+
+2. Open the CMake GUI
+
+3. For the "Where is the source code:" field, browse the directory of the OpenCV folder, in this example it is "C:/OpenCV4/opencv-master"
+
+4. For the "Where to build the binaries:" field, create a folder inside the OpenCV folder called "opencv" and click Browse Build to add it. In this example, it is "C:/OpenCV4/opencv4"
+
+
+
 # Yolo_mark
 **Windows** & **Linux** GUI for marking bounded boxes of objects in images for training Yolo v3 and v2
 

@@ -15,7 +15,7 @@ https://visualstudio.microsoft.com/vs/older-downloads/
 
 ### Installation (For Windows 10 64-bit)
 
-1. Extract the opencv-master.zip to a directory like `C:/OpenCV/opencv-master`
+1. Extract the opencv-master.zip to your C: or any drive you like, and you can rename the outfolder so the directory is like this `C:/OpenCV4/opencv-master`
 
 2. Open the CMake GUI
 
@@ -35,11 +35,46 @@ https://visualstudio.microsoft.com/vs/older-downloads/
    - You will see a message "Generating done" in the main GUI window when it is complete.
    
 8. Click **Open Project**
-   - Visual Studio will open. You will see to find **CMakeTargets** in the Solution Explorer. Make sure the Local Windows Debugger is set to **Debug** and **x64** and right-click the **ALL_BUILD** C++ project and select **BUILD**.  
-   - After, set the Local Windows Debugger to **Release** and keep **x64**. Right-click the **ALL_BUILD** C++ project again and select **BUILD**.
-   - Keep the Local Windows Debugger on **Release** and **x64**. Right-click the **INSTALL** C++ project and select **BUILD**.
-   - Change the Local Windows Debugger to **Debug** and **x64**. Right-click the **INSTALL** C++ project and select **BUILD**.
-     - This will generate all the library, include, x64, and bin/lib directories all in one space.
+   - Visual Studio will open. You will need to find **CMakeTargets** folder in the Solution Explorer to the right. Make sure the Local Windows Debugger is set to **Debug** and **x64** and select the **ALL_BUILD** C++ project, right-click and select **BUILD**.  
+   - After, set the Local Windows Debugger to **Release** and keep it set to **x64**. Select the **ALL_BUILD** C++ project again, right-click and select **BUILD**.
+   - Keep the Local Windows Debugger on **Release** and set to **x64**. But this time, select the **INSTALL** C++ project, right-click and select **BUILD**.
+   - Change the Local Windows Debugger to **Debug** and set to **x64**. Select the **INSTALL** C++ project, right-click and select **BUILD**.
+     - This will generate all the library, includes, x64, and bin/lib directories all in one space.
+     
+9. In Windows search, type "env" to access the Environment Variables.
+   - In System Properties, under the Advanced tab, click **Environment Variables**
+   - Below the **System variables** list, click **New** and enter these values for the two fields:
+     - Variable name: `OPENCV_DIR`.
+     - Variable value: `C:\OpenCV4\opencv4\install\x64\vc15`
+   - Click OK
+   - Still in the System variables window, select **Path** and click **Edit**. Add these two directories to the path:
+     - %OPENCV_DIR%\bin
+     - %OPENCV_DIR%\lib
+   - Click OK and you can exit out of the System Properties now.
+     
+9. Test That Install Works
+   - Creating an Empty C++ Project (Name it anything you want)
+   - Right-click on the Source Files folder in the Solution Explorer to the right and add a New Item -> C++ File (.cpp) (Any name is fine)
+   - Copy and paste the code below into the Source.cpp you just added:
+     - `#include "opencv2/core.hpp"
+        #include "opencv2/highgui.hpp"
+
+        using namespace std;
+        using namespace cv;
+
+        int main(int argv, char* argc)
+        {
+	     Mat A;
+	     A = Mat::zeros(100, 100, CV_8U);
+	     namedWindow("x", WINDOW_AUTOSIZE);
+	     imshow("x", A);
+	     waitKey(0);
+	     return 0;
+        }`
+   
+   - Click on **View** -> **Other Windows** -> **Property Manager**.
+   - A left sidebar will appear with Debug | Win32, Debug | x64, Release | Win32, and Release | x64 options.
+   - 
 
 
 

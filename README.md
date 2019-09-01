@@ -91,9 +91,6 @@ https://visualstudio.microsoft.com/vs/older-downloads/
 Press CTRL + F5 or the green play button next to Windows Local Debugger and a blank image should be created and be shown on the screen signifing the installation went successfully!
 ![Installation Complete!](https://github.com/alpizano/Yolo_mark/blob/master/testopencv.png)
 
-[create an anchor](# Prerequisites)
-
-
 # Yolo_mark<a name="main"></a>
 **Windows** & **Linux** GUI for marking bounded boxes of objects in images for training Yolo v3 and v2
 

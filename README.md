@@ -1,23 +1,27 @@
 # Prerequisites
 You will need to download and install the following programs if you do not already have them:
 
-OpenCV (Download as a ZIP)
+## *OpenCV* (Download as a ZIP)
+
 https://github.com/opencv/opencv
 
-CMake 
+## *CMake*
+
 https://cmake.org/download/
 
-Microsoft Visual Studio (2017 garaunteed to work)
+## *Microsoft Visual Studio* (2017 version 15.9.15 garaunteed to work)
+
 https://visualstudio.microsoft.com/vs/older-downloads/
 
 1. Extract the opencv-master.zip to a directory like C:/OpenCV/opencv-master
 
 2. Open the CMake GUI
 
-3. For the "Where is the source code:" field, browse the directory of the OpenCV folder, in this example it is "C:/OpenCV4/opencv-master"
+3. For the "Where is the source code:" field, click **Browse Source...** and add the directory of the OpenCV folder from above. In this example it is *C:/OpenCV4/opencv-master*.
 
-4. For the "Where to build the binaries:" field, create a folder inside the OpenCV folder called "opencv" and click Browse Build to add it. In this example, it is "C:/OpenCV4/opencv4"
+4. For the "Where to build the binaries:" field, create a folder inside the OpenCV folder called "opencv" and click **Browse Build...** to add it. In this example, it is *C:/OpenCV4/opencv4*
 
+5. Click **Configure**
 
 
 # Yolo_mark

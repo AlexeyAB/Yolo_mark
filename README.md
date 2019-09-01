@@ -1,17 +1,18 @@
 # Prerequisites
 You will need to download and install the following programs if you do not already have them:
 
-## *OpenCV* (Download as a ZIP)
+## OpenCV (Download as a ZIP)
 
 https://github.com/opencv/opencv
 
-## *CMake*
+## CMake
 
 https://cmake.org/download/
 
-## *Microsoft Visual Studio* (2017 version 15.9.15 garaunteed to work)
+## Microsoft Visual Studio (2017 version 15.9.15 garaunteed to work)
 
 https://visualstudio.microsoft.com/vs/older-downloads/
+
 
 1. Extract the opencv-master.zip to a directory like C:/OpenCV/opencv-master
 

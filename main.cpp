@@ -924,9 +924,16 @@ int main(int argc, char *argv[])
 			if (exit_flag) break;	// exit after saving
 			if (pressed_key == 27 || pressed_key == 1048603) exit_flag = true;// break;  // ESC - save & exit
 
+			auto old_obj_id = current_obj_id;
 			if (pressed_key >= '0' && pressed_key <= '9') current_obj_id = pressed_key - '0';   // 0 - 9
 			if (pressed_key >= 1048624 && pressed_key <= 1048633) current_obj_id = pressed_key - 1048624;   // 0 - 9
 
+			if(old_obj_id != current_obj_id
+				&& selected_id >= 0)
+			{
+				current_coord_vec[selected_id].id = current_obj_id;
+			}
+			
 			switch (pressed_key)
 			{
 			//case 'z':		// z

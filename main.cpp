@@ -798,9 +798,20 @@ int main(int argc, char *argv[])
 			}
 
             int selected_id = -1;
-            // draw all labels
-			//for (auto &i : current_coord_vec)
-            for(size_t k = 0; k < current_coord_vec.size(); ++k)
+
+			// find innermost intersecting vec (z-index)
+			for (size_t k = 0; k < current_coord_vec.size(); ++k)
+			{
+				auto& i = current_coord_vec.at(k);
+				if (i.abs_rect.x < x_end && (i.abs_rect.x + i.abs_rect.width) > x_end &&
+					(i.abs_rect.y + preview.rows) < y_end && (i.abs_rect.y + i.abs_rect.height + preview.rows) > y_end)
+				{
+					selected_id = k;
+				}
+			}
+
+			// draw all labels
+			for (size_t k = 0; k < current_coord_vec.size(); ++k)
 			{
                 auto &i = current_coord_vec.at(k);
 				std::string synset_name;
@@ -812,17 +823,12 @@ int main(int argc, char *argv[])
 				int blue = (offset + 140) % 255 * ((i.id + 0) % 3);
 				Scalar color_rect(red, green, blue);    // Scalar color_rect(100, 200, 100);
 
-                // selected rect
-                if (i.abs_rect.x < x_end && (i.abs_rect.x + i.abs_rect.width) > x_end &&
-                    (i.abs_rect.y + preview.rows) < y_end && (i.abs_rect.y + i.abs_rect.height + preview.rows) > y_end)
-                {
-                    if (selected_id < 0) {
-                        color_rect = Scalar(100, 200, 300);
-                        selected_id = k;
-                        rectangle(full_image_roi, i.abs_rect, color_rect, mark_line_width*2);
-                    }
-                }
-
+				if(selected_id == k)
+				{
+					color_rect = Scalar(100, 200, 300);
+					rectangle(full_image_roi, i.abs_rect, color_rect, mark_line_width * 2);
+				}
+				
 				if (show_mark_class)
 				{
 					putText(full_image_roi, std::to_string(i.id) + synset_name,

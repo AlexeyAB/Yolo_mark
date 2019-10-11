@@ -173,6 +173,8 @@ std::atomic<bool> right_button_click;
 std::atomic<int> move_rect_id;
 std::atomic<bool> move_rect;
 std::atomic<bool> clear_marks;
+std::atomic<bool> wheel_increase_obj_id;
+std::atomic<bool> wheel_decrease_obj_id;
 std::atomic<bool> copy_previous_marks(false);
 std::atomic<bool> tracker_copy_previous_marks(false);
 
@@ -243,6 +245,11 @@ void callback_mouse_click(int event, int x, int y, int flags, void* user_data)
     {
         x_end = max(x, 0);
         y_end = max(y, 0);
+    }
+    else if (event == cv::EVENT_MOUSEWHEEL) 
+    {
+		wheel_decrease_obj_id = getMouseWheelDelta(flags) > 0;
+		wheel_increase_obj_id = wheel_decrease_obj_id ? false : true;
     }
 }
 
@@ -918,18 +925,27 @@ int main(int argc, char *argv[])
 			int pressed_key = cv::waitKey(20);		// OpenCV 2.x
 #endif
 
+			auto old_obj_id = current_obj_id;
+
 			if (pressed_key >= 0)
 				for (int i = 0; i < 5; ++i) cv::waitKey(1);
 			
 			if (exit_flag) break;	// exit after saving
 			if (pressed_key == 27 || pressed_key == 1048603) exit_flag = true;// break;  // ESC - save & exit
 
-			auto old_obj_id = current_obj_id;
 			if (pressed_key >= '0' && pressed_key <= '9') current_obj_id = pressed_key - '0';   // 0 - 9
 			if (pressed_key >= 1048624 && pressed_key <= 1048633) current_obj_id = pressed_key - 1048624;   // 0 - 9
 
-			if(old_obj_id != current_obj_id
-				&& selected_id >= 0)
+			if(old_obj_id == current_obj_id
+				&& (wheel_increase_obj_id || wheel_decrease_obj_id))
+			{
+				current_obj_id = wheel_increase_obj_id ? 
+					min(max_object_id, current_obj_id + 1) :
+					max(0, current_obj_id - 1);
+				wheel_decrease_obj_id = wheel_increase_obj_id = false;
+			}
+
+			if(old_obj_id != current_obj_id && selected_id >= 0) 
 			{
 				current_coord_vec[selected_id].id = current_obj_id;
 			}

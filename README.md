@@ -6,6 +6,10 @@
     * (right click on project) -> properties -> C/C++ -> General -> Additional Include Directories: `C:\opencv_3.0\opencv\build\include;`
         
     * (right click on project) -> properties -> Linker -> General -> Additional Library Directories: `C:\opencv_3.0\opencv\build\x64\vc14\lib;`
+    
+    * If you got errors then install **cmake** select the yolo_mark repo folder and same for target.Then click on configure then generate then open project and finally simply build it with `x64 & Release` selection.
+    Now yolo_mark.exe should be generated in `Release` folder copy yolo_mark.exe then paste into x64/release also put opencv_worldxxx.dll.Now you are good to go.
+ 
 
 * To compile on **Linux** type in console 3 commands:
     ```

@@ -195,6 +195,7 @@ std::atomic<int> add_id_img;
 Rect prev_img_rect(0, 0, 50, 100);
 Rect next_img_rect(1280 - 50, 0, 50, 100);
 
+int trackbar_default_start_value;
 
 void callback_mouse_click(int event, int x, int y, int flags, void* user_data)
 {
@@ -275,12 +276,13 @@ int main(int argc, char *argv[])
 			images_path = std::string(argv[1]);         // path to images, train and synset
 		}
 		else {
-			std::cout << "Usage: [path_to_images] [train.txt] [obj.names] \n";
+			std::cout << "Usage: [path_to_images] [train.txt] [obj.names] [trackbar start value (default 0)] \n";
 			return 0;
 		}
 
 		std::string train_filename = images_path + "train.txt";
 		std::string synset_filename = images_path + "obj.names";
+		
 
 		if (argc >= 3) {
 			train_filename = std::string(argv[2]);		// file containing: list of images
@@ -288,6 +290,18 @@ int main(int argc, char *argv[])
 
 		if (argc >= 4) {
 			synset_filename = std::string(argv[3]);		// file containing: object names
+		}
+
+		if(argc >= 5)
+		{
+			try
+			{
+				trackbar_default_start_value = std::stoi(argv[4]);
+			} catch(const std::exception& ex)
+			{
+				std::cerr << "Error parsing trackbar start value: " << argv[4] << ". Exception message: " << ex.what() << std::endl;
+				return 0;
+			}
 		}
 
         // optical flow tracker
@@ -495,7 +509,8 @@ int main(int argc, char *argv[])
 		bool next_by_click = false;
 		bool marks_changed = false;
 
-		int old_trackbar_value = -1, trackbar_value = 0;
+		int old_trackbar_value = -1, trackbar_value = trackbar_default_start_value < 0
+			|| trackbar_default_start_value > image_list_count ? 0 : trackbar_default_start_value;
 		std::string const trackbar_name = "image num";
 		int tb_res = createTrackbar(trackbar_name, window_name, &trackbar_value, image_list_count);
 

@@ -18,21 +18,28 @@
 //#include <opencv2/optflow.hpp>
 #include <opencv2/video/tracking.hpp>
 
+#if _WIN32
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN 1
+#endif
+#ifndef NOMINMAX
+#define NOMINMAX 1
+#endif
+#include <windows.h>
+#endif
+
 #ifdef _DEBUG
 #define LIB_SUFFIX "d.lib"
 #else
 #define LIB_SUFFIX ".lib"
 #endif // DEBUG
 
-#ifndef CV_VERSION_EPOCH
-#include "opencv2/videoio/videoio.hpp"
-#define OPENCV_VERSION CVAUX_STR(CV_VERSION_MAJOR)"" CVAUX_STR(CV_VERSION_MINOR)"" CVAUX_STR(CV_VERSION_REVISION)
-#pragma comment(lib, "opencv_world" OPENCV_VERSION LIB_SUFFIX)
-#else
-#define OPENCV_VERSION CVAUX_STR(CV_VERSION_EPOCH)"" CVAUX_STR(CV_VERSION_MAJOR)"" CVAUX_STR(CV_VERSION_MINOR)
-#pragma comment(lib, "opencv_core" OPENCV_VERSION LIB_SUFFIX)
-#pragma comment(lib, "opencv_imgproc" OPENCV_VERSION LIB_SUFFIX)
-#pragma comment(lib, "opencv_highgui" OPENCV_VERSION LIB_SUFFIX)
+#pragma comment(lib, "opencv_core" LIB_SUFFIX)
+#pragma comment(lib, "opencv_imgproc" LIB_SUFFIX)
+#pragma comment(lib, "opencv_highgui" LIB_SUFFIX)
+
+#if _WIN32
+#pragma comment(lib, "user32")
 #endif
 
 #ifndef CV_FILLED
@@ -196,6 +203,64 @@ Rect prev_img_rect(0, 0, 50, 100);
 Rect next_img_rect(1280 - 50, 0, 50, 100);
 
 int trackbar_default_start_value;
+
+static std::map<int, int> upper_letters_class_map = {
+	{ 65, 0 }, // A
+	{ 66, 1 }, // B
+	{ 67, 2 }, // C
+	{ 68, 3 }, // D
+	{ 69, 4 }, // E
+	{ 70, 5 }, // F
+	{ 71, 6 }, // G
+	{ 72, 7 }, // H
+	{ 73, 8 }, // I
+	{ 74, 9 }, // J
+	{ 75, 10 }, // K
+	{ 76, 11 }, // L
+	{ 77, 12 }, // M
+	{ 78, 13 }, // N
+	{ 79, 14 }, // O
+	{ 80, 15 }, // P
+	{ 81, 16 }, // Q
+	{ 82, 17 }, // R
+	{ 83, 18 }, // S
+	{ 84, 19 }, // T
+	{ 85, 20 }, // U
+	{ 86, 21 }, // V
+	{ 87, 22 }, // W
+	{ 88, 23 }, // X
+	{ 89, 24 }, // Y
+	{ 90, 25 }, // Z
+};
+
+static std::map<int, int> lower_letters_class_map = {
+	{ 97, 0 }, // A
+	{ 98, 1 }, // B
+	{ 99, 2 }, // C
+	{ 100, 3 }, // D
+	{ 101, 4 }, // E
+	{ 102, 5 }, // F
+	{ 103, 6 }, // G
+	{ 104, 7 }, // H
+	{ 105, 8 }, // I
+	{ 106, 9 }, // J
+	{ 107, 10 }, // K
+	{ 108, 11 }, // L
+	{ 109, 12 }, // M
+	{ 110, 13 }, // N
+	{ 111, 14 }, // O
+	{ 112, 15 }, // P
+	{ 113, 16 }, // Q
+	{ 114, 17 }, // R
+	{ 115, 18 }, // S
+	{ 116, 19 }, // T
+	{ 117, 20 }, // U
+	{ 118, 21 }, // V
+	{ 119, 22 }, // W
+	{ 120, 23 }, // X
+	{ 121, 24 }, // Y
+	{ 122, 25 }, // Z
+};
 
 void callback_mouse_click(int event, int x, int y, int flags, void* user_data)
 {
@@ -948,6 +1013,10 @@ int main(int argc, char *argv[])
 
 			auto old_obj_id = current_obj_id;
 
+			auto shift_key_pressed = ::GetKeyState(VK_SHIFT) & 0x8000;
+			auto xbutton_1_key_pressed = ::GetKeyState(VK_XBUTTON1) & 0x8000;
+			auto xbutton_2_key_pressed = ::GetKeyState(VK_XBUTTON2) & 0x8000;
+						
 			if (pressed_key >= 0)
 				for (int i = 0; i < 5; ++i) cv::waitKey(1);
 			
@@ -956,6 +1025,12 @@ int main(int argc, char *argv[])
 
 			if (pressed_key >= '0' && pressed_key <= '9') current_obj_id = pressed_key - '0';   // 0 - 9
 			if (pressed_key >= 1048624 && pressed_key <= 1048633) current_obj_id = pressed_key - 1048624;   // 0 - 9
+			if (shift_key_pressed && pressed_key >= 'a' && pressed_key <= 'z') {
+				current_obj_id = lower_letters_class_map[pressed_key];
+			}
+			if (shift_key_pressed && pressed_key >= 'A' && pressed_key <= 'Z') {
+				current_obj_id = upper_letters_class_map[pressed_key];
+			}			
 
 			if(old_obj_id == current_obj_id
 				&& (wheel_increase_obj_id || wheel_decrease_obj_id))
@@ -970,6 +1045,8 @@ int main(int argc, char *argv[])
 			{
 				current_coord_vec[selected_id].id = current_obj_id;
 			}
+
+			auto trackbar_value_before = trackbar_value;
 			
 			switch (pressed_key)
 			{
@@ -1037,6 +1114,14 @@ int main(int argc, char *argv[])
                 break;
 			default:
 				;
+			}
+
+			if(trackbar_value_before == trackbar_value && xbutton_1_key_pressed)
+			{
+				++trackbar_value;
+			} else if(trackbar_value_before == trackbar_value && xbutton_2_key_pressed)
+			{
+				--trackbar_value;
 			}
 
             if(tracker_copy_previous_marks)

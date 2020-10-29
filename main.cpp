@@ -968,16 +968,16 @@ int main(int argc, char *argv[])
 			{
 				putText(full_image_roi,
 					"<- prev_img    -> next_img    c - clear_marks    n - one_object_per_img    0-9 - obj_id    m - show coords    ESC - exit",
-					Point2i(0, 45), FONT_HERSHEY_SIMPLEX, 0.6, Scalar(50, 10, 10), 2);
+					Point2i(0, 45), FONT_HERSHEY_SIMPLEX, 0.6, Scalar(255, 10, 10), 2);
 				putText(full_image_roi,
 					"w - line width   k - hide obj_name   p - copy previous   o - track objects   r - delete selected   R-mouse - move box", //   h - disable help",
-					Point2i(0, 80), FONT_HERSHEY_SIMPLEX, 0.6, Scalar(50, 10, 10), 2);
+					Point2i(0, 80), FONT_HERSHEY_SIMPLEX, 0.6, Scalar(255, 10, 10), 2);
 			}
 			else
 			{
 				putText(full_image_roi,
 					"h - show help",
-					Point2i(0, 45), FONT_HERSHEY_SIMPLEX, 0.6, Scalar(50, 10, 10), 2);
+					Point2i(0, 45), FONT_HERSHEY_SIMPLEX, 0.6, Scalar(255, 10, 10), 2);
 			}
 
 

@@ -1016,8 +1016,9 @@ int main(int argc, char *argv[])
 			auto shift_key_pressed = ::GetKeyState(VK_SHIFT) & 0x8000;
 			auto xbutton_1_key_pressed = ::GetKeyState(VK_XBUTTON1) & 0x8000;
 			auto xbutton_2_key_pressed = ::GetKeyState(VK_XBUTTON2) & 0x8000;
-						
-			if (pressed_key >= 0)
+
+			auto special_key_pressed = shift_key_pressed || xbutton_1_key_pressed || xbutton_2_key_pressed;						
+			if (special_key_pressed || pressed_key >= 0)
 				for (int i = 0; i < 5; ++i) cv::waitKey(1);
 			
 			if (exit_flag) break;	// exit after saving
@@ -1046,7 +1047,7 @@ int main(int argc, char *argv[])
 				current_coord_vec[selected_id].id = current_obj_id;
 			}
 
-			auto trackbar_value_before = trackbar_value;
+			const auto trackbar_value_before = trackbar_value;
 			
 			switch (pressed_key)
 			{

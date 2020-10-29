@@ -1017,8 +1017,8 @@ int main(int argc, char *argv[])
 			auto xbutton_1_key_pressed = ::GetKeyState(VK_XBUTTON1) & 0x8000;
 			auto xbutton_2_key_pressed = ::GetKeyState(VK_XBUTTON2) & 0x8000;
 
-			auto special_key_pressed = shift_key_pressed || xbutton_1_key_pressed || xbutton_2_key_pressed;						
-			if (special_key_pressed || pressed_key >= 0)
+			auto special_mouse_buttons_down = xbutton_1_key_pressed || xbutton_2_key_pressed;						
+			if (special_mouse_buttons_down || pressed_key >= 0)
 				for (int i = 0; i < 5; ++i) cv::waitKey(1);
 			
 			if (exit_flag) break;	// exit after saving

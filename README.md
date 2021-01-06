@@ -1,4 +1,102 @@
-# Yolo_mark
+## Prerequisites (if you already have OpenCV for Windows and Visual Studio installed, you can jump to [Yolo_mark](#main) to begin)
+
+You will need to download the following programs in order to use Yolo mark, if you do not already have them:
+
+#### OpenCV (Download as a ZIP)
+
+https://github.com/opencv/opencv
+
+#### CMake
+
+https://cmake.org/download/
+
+#### Microsoft Visual Studio (2017 version 15.9.15 garaunteed to work)
+
+https://visualstudio.microsoft.com/vs/older-downloads/
+
+### Installation (For Windows 10 64-bit)
+
+1. Extract the opencv-master.zip to your C: or any drive you like, and you can rename the outfolder so the directory is like this `C:/OpenCV4/opencv-master`
+
+2. Open the CMake GUI
+
+3. For the "Where is the source code:" field, click **Browse Source...** and add the directory of the OpenCV folder from above. In this example it is `C:/OpenCV4/opencv-master`.
+
+4. For the "Where to build the binaries:" field, create a folder inside the OpenCV folder called "opencv" and click **Browse Build...** to add it. In this example, it is `C:/OpenCV4/opencv4`
+
+5. Click **Configure**
+   - For "Specify the generator for this project", make sure to select your version of Visual Studio. In this example, we are using **Visual Studio 15 2017**
+   - Under "Optional platform for generator", select **x64**. If you leave it blank, it defaults to Win32 and you will only be able to build Debug/Release in Visual Studio in Win32 and may get `LNK1112 module machine type 'x64' conflicts with target machine type 'x86` build error.
+   - "Optional toolset to use" can  be left blank.
+   - "Use default native compilers" can be checked.
+
+6. After configuration is complete you will see a message `Configuring done` in the main GUI window. Find the field name **BUILD_opencv_world** in the main window and tick the box [x] to include it.
+
+7. Click **Generate**
+   - You will see a message `Generating done` in the main GUI window when it is complete.
+   
+8. Click **Open Project**
+   - Visual Studio will open. You will need to find **CMakeTargets** folder in the Solution Explorer to the right. Make sure the Local Windows Debugger is set to **Debug** and **x64** and select the **ALL_BUILD** C++ project, right-click and select **BUILD**. 
+     - If you happen to get an error:   
+     `LNK1104: cannot open file 'python37_d.lib`
+     - Then you can build the debug version of that library yourself if you do not have the file anywhere on your computer. It's very simple, please refer to this Stack Overflow post where **J.T. Davies** explains how to do it:
+     https://stackoverflow.com/questions/17028576/using-python-3-3-in-c-python33-d-lib-not-found
+   - After, set the Local Windows Debugger to **Release** and keep it set to **x64**. Select the **ALL_BUILD** C++ project again, right-click and select **BUILD**.
+   - Keep the Local Windows Debugger on **Release** and set to **x64**. But this time, select the **INSTALL** C++ project, right-click and select **BUILD**.
+   - Change the Local Windows Debugger to **Debug** and set to **x64**. Select the **INSTALL** C++ project, right-click and select **BUILD**.
+     - This will generate all the library, includes, x64, and bin/lib directories all in one space.
+   - You can close out of Visual Studio.
+     
+9. In Windows search, type `env` to access the Environment Variables.
+   - In System Properties, under the Advanced tab, click **Environment Variables**
+   - Below the **System variables** list, click **New** and enter these values for the two fields:
+     - Variable name: `OPENCV_DIR`.
+     - Variable value: `C:\OpenCV4\opencv4\install\x64\vc15`
+   - Click OK
+   - Still in the **System variables** window, select **Path** and click **Edit**. Add these two directories to the path:
+     - %OPENCV_DIR%\bin
+     - %OPENCV_DIR%\lib
+   - Click OK and you can exit out of the System Properties now.
+     
+9. Test That Install Works
+   - Creating an empty C++ project (Name it anything you want)
+   - Right-click on the **Source Files** folder in the **Solution Explorer** to the right and add a **New Item** -> **C++ File (.cpp)** (sny name is fine)
+   - Copy and paste the code below into the Source.cpp you just added:
+     ```
+     #include "opencv2/core.hpp"
+     #include "opencv2/highgui.hpp"
+
+        using namespace std;
+        using namespace cv;
+
+        int main(int argv, char* argc)
+        {
+	     Mat A;
+	     A = Mat::zeros(100, 100, CV_8U);
+	     namedWindow("x", WINDOW_AUTOSIZE);
+	     imshow("x", A);
+	     waitKey(0);
+	     return 0;
+        }	
+	
+   - Click on **View** -> **Other Windows** -> **Property Manager**.
+   - A left sidebar will appear with **Debug | Win32**, **Debug | x64**, **Release | Win32**, and **Release | x64** options.
+   - **Make sure the Local Windows Debugger is set to Debug and x64**
+   - Right-click Debug | x64 in Property Manager window to the left and select **Properties**.
+     - *Alternatively*, you can find these same C/C++, Linker options by right-clicking your C++ project in the Solution Explorer and selecting **Properties**.
+   - Under **C/C++** -> **General** -> **Additional Include Directories**, add:
+     - `C:\OpenCV4\opencv4\install\include`or whatever your install\include location is
+   - Under **Linker** -> **Additional Library Dependences**, add:
+     - `C:\OpenCV4\opencv4\install\x64\vc15\lib`
+   - Under **Linker** -> **Input** -> **Additional Dependencies**, add:
+     - `opencv_highgui411d.lib`
+     - `opencv_core411d.lib`
+   - Note: If your other projects are requiring other library files, you may need to add them to the **Linker** -> **Input** -> **Additional Dependencies** field manually. These files will have a "d" suffix for debug and are found in `C:\OpenCV4\opencv4\install\x64\vc15\lib`
+
+Press **CTRL + F5** or the green play button next to Windows Local Debugger and a blank image should be created and be shown on the screen signifing the installation went successfully! :bowtie:
+![Installation Complete!](https://github.com/alpizano/Yolo_mark/blob/master/testopencv.png)
+
+# Yolo_mark<a name="main"></a>
 **Windows** & **Linux** GUI for marking bounded boxes of objects in images for training Yolo v3 and v2
 
 * To compile on **Windows** open `yolo_mark.sln` in MSVS2013/2015, compile it **x64 & Release** and run the file: `x64/Release/yolo_mark.cmd`. Change paths in `yolo_mark.sln` to the OpenCV 2.x/3.x installed on your computer:

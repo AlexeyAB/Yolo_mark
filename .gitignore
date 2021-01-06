@@ -4,3 +4,7 @@
 /Makefile
 /cmake_install.cmake
 /yolo_mark
+.vs/
+x64/Release/data
+x64/Release/data/obj.names
+x64/Release/data/*.txt
